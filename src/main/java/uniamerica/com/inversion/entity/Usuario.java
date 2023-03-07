@@ -12,28 +12,28 @@ import org.hibernate.validator.constraints.br.CPF;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "usuarios", schema = "public")
+@Table(name = "USUARIOS", schema = "public") //Seguir este padrão para tabelas e campos
 public class Usuario extends AbstractEntity{
 
     @Getter @Setter
-    @Column(name = "nome", length = 50)
+    @Column(name = "USU_NOME", length = 50)
     private String nome;
 
     @Getter @Setter
     @CPF
-    @Column(name = "cpf", unique = true, length = 15)
+    @Column(name = "USU_CPF", unique = true, length = 15)
     private String cpf;
 
     @Getter @Setter
-    @Column(name = "telefone", length = 18)
+    @Column(name = "USU_TELEFONE", length = 18)
     private String telefone;
 
     @Getter @Setter
-    @Column(name = "email", length = 50)
+    @Column(name = "USU_EMAIL", length = 50)
     private String email;
 
     @Getter @Setter
-    @Column(name = "senha", length = 50)
+    @Column(name = "USU_SENHA", length = 50)
     private String senha;
 
     public Usuario(String nome, String cpf, String telefone, String email, String senha) {
