@@ -36,11 +36,11 @@ public class Usuario extends AbstractEntity{
     @Column(name = "USU_SENHA", length = 50)
     private String senha;
 
-    public Usuario(String nome, String cpf, String telefone, String email, String senha) {
-        this.nome = nome;
-        this.cpf = cpf;
-        this.telefone = telefone;
-        this.email = email;
-        this.senha = senha;
+    public Usuario(String USU_NOME, String USU_CPF, String USU_TELEFONE, String USU_EMAIL, String USU_SENHA) {
+        this.nome = USU_NOME;
+        this.cpf = USU_CPF;
+        this.telefone = USU_TELEFONE;
+        this.email = USU_EMAIL;
+        this.senha = USU_SENHA;
     }
 }
