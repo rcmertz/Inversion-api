@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import uniamerica.com.inversion.entity.Carteira;
 import uniamerica.com.inversion.service.CarteiraService;
 
 @Controller
@@ -44,7 +45,7 @@ public class CarteiraController {
         }
     }
     @PutMapping("/desativar/{idCarteira}")
-    public ResponseEntity<?> desativar(@PathVariable Long idCarteira, @RequestBody Caretira carteira) {
+    public ResponseEntity<?> desativar(@PathVariable Long idCarteira, @RequestBody Carteira carteira) {
         try {
             this.carteiraService.desativar(idCarteira, carteira);
             return ResponseEntity.ok().body("Carteira desativado com sucesso.");
