@@ -30,5 +30,4 @@ public class Carteira extends AbstractEntity{
     @Column(name = "CAR_TIPO", length = 100)
     private String carTipo;
 
-
 }
