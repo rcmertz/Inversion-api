@@ -11,15 +11,14 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "Tipo_Papel", schema = "public") //Seguir este padrão para tabelas e campos
+@Table(name = "TIPO_PAPEL", schema = "public")
 public class TipoPapel extends AbstractEntity{
 
     @Getter @Setter
     @Column(name = "TIP_TIPO")
     private String tipo;
 
-    public TipoPapel(String TIP_TIPO) {
-        this.tipo = TIP_TIPO;
-
+    public TipoPapel(String tipo) {
+        this.tipo = tipo;
     }
 }

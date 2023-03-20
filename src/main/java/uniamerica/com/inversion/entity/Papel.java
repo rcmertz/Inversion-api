@@ -9,7 +9,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "Papel", schema = "public") //Seguir este padrão para tabelas e campos
+@Table(name = "PAPEL", schema = "public")
 public class Papel extends AbstractEntity{
 
     @Getter @Setter
@@ -24,5 +24,6 @@ public class Papel extends AbstractEntity{
     @JoinColumn(name= "idTipo_Papel")
     @ManyToOne(fetch = FetchType.EAGER)
     private TipoPapel tipo;
+
 
 }
