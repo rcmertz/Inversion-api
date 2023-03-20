@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "USUARIOS", schema = "public") //Seguir este padrão para tabelas e campos
+@Table(name = "USUARIO", schema = "public") //Seguir este padrão para tabelas e campos
 public class Usuario extends AbstractEntity{
 
     @Getter @Setter

@@ -7,6 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @CrossOrigin
-@RequestMapping
+@RequestMapping("/api/carteira")
 public class CarteiraController {
+
+    //DESCRICAO
+    //VALOR
+    //DATA_CRIACAO
+    //TIPO
+
 }
