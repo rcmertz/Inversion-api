@@ -23,8 +23,11 @@ public class UsuarioService {
 
     @Transactional
     public void insert(Usuario usuario){
-        this.validarCadastro(usuario);
-        this.usuarioRepository.save(usuario);
+        if (this.validarCadastro(usuario) == true) {
+            this.usuarioRepository.save(usuario);
+        }else {
+            throw new RuntimeException("Falha ao Cadastrar o Usuario");
+        }
     }
 
     @Transactional
@@ -45,12 +48,12 @@ public class UsuarioService {
             throw new RuntimeException("Falha ao Desativar o Usuario");
         }
     }
-    //** Validacao do Cliente **//
+    //** Validacao do Usuario **//
 
-    //Valida se Nome do cliente nao e vazio ou nulo
+    //Valida se Nome do usuario nao e vazio ou nulo
     public Boolean isNomeNotNull(Usuario usuario) {
         if (usuario.getNome() == null || usuario.getNome().isEmpty()) {
-            throw new RuntimeException("O nome não foi fornecido, favor insira um nome valido.");
+            throw new RuntimeException("O nome não foi fornecido, favor insira um nome de usuario valido.");
         } else {
             return true;
         }
@@ -61,13 +64,14 @@ public class UsuarioService {
             char chr = usuario.getNome().charAt(i);
             for (int j = 0; j < charSearch.length; j++) {
                 if (charSearch[j] == chr) {
-                    throw new RuntimeException("O nome fornecido não é valido, favor insira um nome sem caracter especial.");
+                    throw new RuntimeException("O nome fornecido não é valido, favor insira um nome de usuario sem caracter especial.");
                 }
             }
         }
         return true;
     }
 
+    //Valida se o CPF nao e nulo
     public Boolean isCpfNotNull(Usuario usuario) {
         if (usuario.getCpf() != null || !usuario.getCpf().isEmpty()) {
             return true;
@@ -75,20 +79,29 @@ public class UsuarioService {
             throw new RuntimeException("O CPF do Usuario nao foi fornecido, favor inserir um CPF.");
         }
     }
+
+    //TESTE
+    //Valida se ja existe o usuario no banco
+
+
+
+    //Valida se o CPF tem 11 caracteres
     public Boolean isCpfMenor(Usuario usuario) {
         if (usuario.getCpf().length() == 11) {
             return true;
         } else {
-            throw new RuntimeException("CPF é inválido, precisar ter 11 caracteres.");
+            throw new RuntimeException("CPF é inválido, precisa ter 11 caracteres.");
         }
     }
+
+    //Valida se o CPF chegou com caracteres especiais
     public Boolean isCpfCaracter(Usuario usuario) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
         for (int i = 0; i < usuario.getCpf().length(); i++) {
             char chr = usuario.getCpf().charAt(i);
             for (int j = 0; j < charSearch.length; j++) {
                 if (charSearch[j] == chr) {
-                    throw new RuntimeException("O CPF fornecido não é válido, favor insira apenas números");
+                    throw new RuntimeException("O CPF fornecido não é válido, favor inserir apenas números");
                 }
             }
         }
@@ -97,7 +110,7 @@ public class UsuarioService {
     //Valida se Telefone do usuario nao e nulo ou vazio
     public Boolean isTelefoneNotNull(Usuario usuario) {
         if (usuario.getTelefone() == null) {
-            throw new RuntimeException("O telefone não foi fornecido, favor insira um telefone");
+            throw new RuntimeException("O telefone do usuario não foi fornecido, favor inserir um telefone");
         } else {
             return true;
         }
@@ -119,7 +132,7 @@ public class UsuarioService {
             char chr = usuario.getTelefone().charAt(i);
             for (int j = 0; j < charSearch.length; j++) {
                 if (charSearch[j] == chr) {
-                    throw new RuntimeException("O telefone fornecido nao e valido, possui caracteres especiais! ");
+                    throw new RuntimeException("O telefone fornecido do usuario nao e valido, possui caracteres especiais! ");
                 }
             }
         }
@@ -127,13 +140,13 @@ public class UsuarioService {
     }
 
     //Valida se os campos do cadastro do Usuario nao estao nulos
-    public boolean campoCadastroNull(Usuario usuario){
-        if(usuario.getNome()== null || usuario.getTelefone() == null
-                || usuario.getCpf() == null) {
-            return true;
-        }else
-            throw new RuntimeException("Não pode ser cadastrado com algum campo em branco.");
-    }
+//    public boolean campoCadastroNull(Usuario usuario){
+//        if(usuario.getNome()== null || usuario.getTelefone() == null
+//                || usuario.getCpf() == null || usuario.getEmail() == null || usuario.getSenha() == null) {
+//            throw new RuntimeException("O usuario não pode ser cadastrado com algum campo em branco.");
+//        }else
+//            return true;
+//    }
 
     //Funcao para validar o cadastro do Usuario
     public boolean validarCadastro(Usuario usuario){
@@ -143,10 +156,12 @@ public class UsuarioService {
                 this.isCpfMenor(usuario) == true &&
                 this.isTelefoneCaracter(usuario) == true &&
                 this.isTelefoneMenor(usuario) == true &&
-                this.isTelefoneNotNull(usuario) == true)
+                this.isTelefoneNotNull(usuario) == true &&
+                //this.campoCadastroNull(usuario) == true &&
+                this.isCpfNotNull(usuario) == true)
         {
             return true;
-        }else{
+        }else {
             return false;
         }
     }
