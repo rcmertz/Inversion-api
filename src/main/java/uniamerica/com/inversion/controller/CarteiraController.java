@@ -19,7 +19,7 @@ public class CarteiraController {
     CarteiraService carteiraService;
 
     @GetMapping("{idCarteira}")
-    public ReponseEntity<carteira> findById(@PathVariable("idCarteira") Long idCarteira) {
+    public ResponseEntity<Carteira> findById(@PathVariable("idCarteira") Long idCarteira) {
         return ResponseEntity.ok().body(this.carteiraService.findById(idCarteira));
     }
     @GetMapping

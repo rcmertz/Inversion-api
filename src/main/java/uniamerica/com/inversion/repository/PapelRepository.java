@@ -13,7 +13,7 @@ public interface PapelRepository extends JpaRepository<Papel,Long> {
     @Modifying
     @Query("UPDATE Papel papel " +
             "SET papel.ativo = false " +
-            "WHERE papel.id = :produto")
+            "WHERE papel.id = :papel")
     public void desativar(@Param("papel") Long idPapel);
 
 }

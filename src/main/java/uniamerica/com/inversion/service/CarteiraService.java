@@ -6,6 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Carteira;
+import uniamerica.com.inversion.entity.Usuario;
+import uniamerica.com.inversion.repository.CarteiraRepository;
+
+
 
 @Service
 public class CarteiraService {
@@ -22,7 +26,7 @@ public class CarteiraService {
 
     @Transactional
     public void insert(Carteira carteira){
-        this.validarCadastro(carteira);
+        //this.validarCadastro(carteira);
         this.carteiraRepository.save(carteira);
     }
 

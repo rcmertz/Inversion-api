@@ -12,19 +12,14 @@ import uniamerica.com.inversion.service.TipoPapelService;
 
 @Controller
 @CrossOrigin
-@RequestMapping("/api/TIPO_PAPEL")
+@RequestMapping("/api/tipoPapel")
 public class TipoPapelController {
 
     @Autowired
     TipoPapelService tipoPapelService;
 
-    @GetMapping("/{idTIPO_PAPEL}")
-    public ResponseEntity<TipoPapel> findyById(@PathVariable("idTIPO_PAPEL") Long idTipoPapelService){
-        return ResponseEntity.ok().body(this.tipoPapelService.findById(idTipoPapelService));
-    }
-
-    @GetMapping("/{idTIPO_PAPEL}")
-    public ResponseEntity<TipoPapel> findById(@PathVariable("idTIPO_PAPEL") Long idTipoPapelService) {
+    @GetMapping("/{idTipoPapel}")
+    public ResponseEntity<TipoPapel> findyById(@PathVariable("idTipoPapel") Long idTipoPapelService){
         return ResponseEntity.ok().body(this.tipoPapelService.findById(idTipoPapelService));
     }
 
@@ -43,7 +38,7 @@ public class TipoPapelController {
         }
     }
 
-    @PutMapping("/{idTIPO_PAPEL}")
+    @PutMapping("/{idTipoPapel}")
     public ResponseEntity<?> update(@PathVariable Long idTipoPapel, @RequestBody TipoPapel tipoPapel) {
         try {
             this.tipoPapelService.update(idTipoPapel, tipoPapel);
@@ -53,7 +48,7 @@ public class TipoPapelController {
         }
     }
 
-    @PutMapping("/desativar/{idTIPO_PAPEL}")
+    @PutMapping("/desativar/{idTipoPapel}")
     public ResponseEntity<?> desativar(@PathVariable Long idTipoPapel, @RequestBody TipoPapel tipoPapel) {
         try {
             this.tipoPapelService.desativar(idTipoPapel, tipoPapel);

@@ -8,14 +8,14 @@ import org.springframework.stereotype.Repository;
 import uniamerica.com.inversion.entity.Usuario;
 
 @Repository
-public interface UsuarioRepository {
+public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     @Modifying
     @Query("UPDATE Usuario usuario " +
             "SET usuario.ativo = false " +
             "WHERE usuario.id = :usuario")
-    public void desativar(@Param("usuario") Long idUsuario) {
-    }
+    public void desativar(@Param("usuario") Long idUsuario);
 
-    public Usuario findUsuarioByCpf(String cpf) {
-    }
+
+
+
 }

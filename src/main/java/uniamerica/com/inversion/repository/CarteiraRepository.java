@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import uniamerica.com.inversion.entity.Carteira;
 
 @Repository
-public interface CarteiraRepository extends JpaRepository<Carteira Long> {
+public interface CarteiraRepository extends JpaRepository<Carteira, Long> {
 
     @Modifying
     @Query("UPDATE Carteira carteira " +
