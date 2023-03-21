@@ -12,7 +12,7 @@ import uniamerica.com.inversion.service.CarteiraService;
 
 @Controller
 @CrossOrigin
-@RequestMapping("/api/carteira")
+@RequestMapping("/api/carteiras")
 public class CarteiraController {
 
     @Autowired
