@@ -26,8 +26,11 @@ public class CarteiraService {
 
     @Transactional
     public void insert(Carteira carteira){
-        //this.validarCadastro(carteira);
-        this.carteiraRepository.save(carteira);
+        if (this.validarCadastro(carteira) == true) {
+            this.carteiraRepository.save(carteira);
+        }else {
+            throw new RuntimeException("Falha ao cadastrar uma carteira");
+        }
     }
 
     @Transactional
@@ -46,6 +49,26 @@ public class CarteiraService {
             this.carteiraRepository.desativar(carteira.getId());
         }else {
             throw new RuntimeException("Falha ao Desativar a Carteira");
+        }
+    }
+
+    //** Validacao do Carteira **//
+
+    //Valida se Nome da carteira nao e vazio ou nulo
+    public Boolean isCarteiraNotNull(Carteira carteira) {
+        if (carteira.getCarDescricao() == null || carteira.getCarDescricao().isEmpty()) {
+            throw new RuntimeException("A descrição da carteira não foi fornecido, favor inserir uma descriçao.");
+        } else {
+            return true;
+        }
+    }
+
+    public boolean validarCadastro(Carteira carteira){
+        if(this.isCarteiraNotNull(carteira) == true)
+        {
+            return true;
+        }else {
+            return false;
         }
     }
 

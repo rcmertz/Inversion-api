@@ -19,7 +19,7 @@ import java.util.Date;
 public class Carteira extends AbstractEntity{
     @Getter @Setter
     @Column(name = "CAR_DESCRICAO", length = 100)
-    private String descricao;
+    private String carDescricao;
     @Getter @Setter
     @Column(name = "CAR_VALOR")
     private Double carValor;

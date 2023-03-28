@@ -22,9 +22,10 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void insert(Usuario usuario){
+    public Usuario insert(Usuario usuario){
         if (this.validarCadastro(usuario) == true) {
             this.usuarioRepository.save(usuario);
+            return usuario;
         }else {
             throw new RuntimeException("Falha ao Cadastrar o Usuario");
         }

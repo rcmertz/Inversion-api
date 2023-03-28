@@ -15,12 +15,13 @@ import org.hibernate.validator.constraints.br.CPF;
 @Table(name = "USUARIO", schema = "public") //Seguir este padrão para tabelas e campos
 public class Usuario extends AbstractEntity{
 
+
     @Getter @Setter
     @Column(name = "USU_NOME", length = 50)
     private String nome;
 
     @Getter @Setter
-    @CPF
+    @CPF(message = "CPF NAO ENCONTRADO")
     @Column(name = "USU_CPF", unique = true, length = 15)
     private String cpf;
 
