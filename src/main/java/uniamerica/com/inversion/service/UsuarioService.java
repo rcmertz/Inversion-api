@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.UsuarioRepository;
