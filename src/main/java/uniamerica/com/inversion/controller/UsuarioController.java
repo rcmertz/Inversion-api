@@ -38,7 +38,6 @@ public class UsuarioController {
             return ResponseEntity.ok().body(usuario);
         } catch (HibernateException e) {
             return ResponseEntity.badRequest().body(e.toString());
-
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<String, Object>();
             response.put("status", "500");       // usar para tratar tudo com JSON *******
@@ -54,9 +53,13 @@ public class UsuarioController {
     public ResponseEntity<?> update(@PathVariable Long idUsuario, @RequestBody Usuario usuario) {
         try {
             this.usuarioService.update(idUsuario, usuario);
-            return ResponseEntity.ok().body("Usuario atualizado com sucesso.");
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(usuario);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<String, Object>();
+            response.put("status", "500");       // usar para tratar tudo com JSON *******
+            response.put("status", "error");
+            response.put("erro", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
@@ -64,11 +67,14 @@ public class UsuarioController {
     public ResponseEntity<?> desativar(@PathVariable Long idUsuario, @RequestBody Usuario usuario) {
         try {
             this.usuarioService.desativar(idUsuario, usuario);
-            return ResponseEntity.ok().body("Usuario desativado com sucesso.");
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(usuario);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<String, Object>();
+            response.put("status", "500");       // usar para tratar tudo com JSON *******
+            response.put("status", "error");
+            response.put("erro", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
-
 
 }

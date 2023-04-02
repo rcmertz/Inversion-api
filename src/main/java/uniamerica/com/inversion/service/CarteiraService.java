@@ -56,7 +56,7 @@ public class CarteiraService {
 
     //Valida se Nome da carteira nao e vazio ou nulo
     public Boolean isCarteiraNotNull(Carteira carteira) {
-        if (carteira.getCarDescricao() == null || carteira.getCarDescricao().isEmpty()) {
+        if (carteira.getDescricao() == null || carteira.getDescricao().isEmpty()) {
             throw new RuntimeException("A descrição da carteira não foi fornecido, favor inserir uma descriçao.");
         } else {
             return true;

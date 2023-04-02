@@ -63,7 +63,7 @@ public class TipoPapelService {
             char chr = tipoPapel.getTipo().charAt(i);
             for (int j = 0; j < charSearch.length; j++) {
                 if (charSearch[j] == chr) {
-                    throw new RuntimeException("O nome fornecido não é valido, favor insira um nome sem caracter especial.");
+                    throw new RuntimeException("O nome do papel fornecido não é valido, favor insira papel sem caracter especiais.");
                 }
             }
         }

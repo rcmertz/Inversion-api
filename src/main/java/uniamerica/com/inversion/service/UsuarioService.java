@@ -1,9 +1,11 @@
 package uniamerica.com.inversion.service;
 
 import jakarta.transaction.Transactional;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.UsuarioRepository;
@@ -71,6 +73,8 @@ public class UsuarioService {
         }
         return true;
     }
+
+    //Valida se o CPF ja existe
 
     //Valida se o CPF nao e nulo
     public Boolean isCpfNotNull(Usuario usuario) {
@@ -158,7 +162,6 @@ public class UsuarioService {
                 this.isTelefoneCaracter(usuario) == true &&
                 this.isTelefoneMenor(usuario) == true &&
                 this.isTelefoneNotNull(usuario) == true &&
-                //this.campoCadastroNull(usuario) == true &&
                 this.isCpfNotNull(usuario) == true)
         {
             return true;

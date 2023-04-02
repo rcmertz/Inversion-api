@@ -17,17 +17,21 @@ import java.util.Date;
 @ToString
 @Table(name = "CARTEIRA", schema = "public")
 public class Carteira extends AbstractEntity{
+
     @Getter @Setter
     @Column(name = "CAR_DESCRICAO", length = 100)
-    private String carDescricao;
+    private String descricao;
+
     @Getter @Setter
     @Column(name = "CAR_VALOR")
-    private Double carValor;
-    @Getter @Setter
-    @Column(name = "CAR_DATA_CRIACAO")
-    private LocalDate dataCriacao;
+    private Double valor;
+
+//    @Getter @Setter
+//    @Column(name = "CAR_DATA_CRIACAO")
+//    private LocalDate dataCriacao;
+
     @Getter @Setter
     @Column(name = "CAR_TIPO", length = 100)
-    private String carTipo;
+    private String tipo;
 
 }

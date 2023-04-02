@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import uniamerica.com.inversion.entity.TipoPapel;
 import uniamerica.com.inversion.service.TipoPapelService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @CrossOrigin
-@RequestMapping("/api/tipoPapel")
+@RequestMapping("/api/tipo_papel")
 public class TipoPapelController {
 
     @Autowired
@@ -32,9 +35,13 @@ public class TipoPapelController {
     public ResponseEntity<?> insert(@RequestBody TipoPapel tipoPapelService) {
         try {
             this.tipoPapelService.insert(tipoPapelService);
-            return ResponseEntity.ok().body("cadastrado com sucesso.");
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(tipoPapelService);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<String, Object>();
+            response.put("status", "500");
+            response.put("status", "error");
+            response.put("erro", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
@@ -42,9 +49,13 @@ public class TipoPapelController {
     public ResponseEntity<?> update(@PathVariable Long idTipoPapel, @RequestBody TipoPapel tipoPapel) {
         try {
             this.tipoPapelService.update(idTipoPapel, tipoPapel);
-            return ResponseEntity.ok().body("atualizado com sucesso.");
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(tipoPapel);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<String, Object>();
+            response.put("status", "500");
+            response.put("status", "error");
+            response.put("erro", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
@@ -52,9 +63,13 @@ public class TipoPapelController {
     public ResponseEntity<?> desativar(@PathVariable Long idTipoPapel, @RequestBody TipoPapel tipoPapel) {
         try {
             this.tipoPapelService.desativar(idTipoPapel, tipoPapel);
-            return ResponseEntity.ok().body(" desativado com sucesso.");
+            return ResponseEntity.ok().body(tipoPapel);
         }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            Map<String, Object> response = new HashMap<String, Object>();
+            response.put("status", "500");
+            response.put("status", "error");
+            response.put("erro", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 }
