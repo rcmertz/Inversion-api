@@ -6,9 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Carteira;
+import uniamerica.com.inversion.entity.Papel;
 import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.CarteiraRepository;
 
+import java.math.BigDecimal;
 
 
 @Service
@@ -69,6 +71,43 @@ public class CarteiraService {
             return true;
         }else {
             return false;
+        }
+    }
+
+    public Boolean isDescricaoNotNull(Carteira carteira) {
+        if (carteira.getDescricao() == null || carteira.getDescricao().isEmpty()) {
+            throw new RuntimeException("Favor inserir uma descricao.");
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean isRecebidoPositivo(Carteira carteira){
+        if (carteira.getValor().compareTo(BigDecimal.valueOf(0.0)) != -1) {
+            return true;
+        } else {
+            throw new RuntimeException("O valor inserido é negativo, favor insira um valor válido.");
+        }
+    }
+
+    public Boolean isRecebidoCaracter(Carteira carteira) {
+        char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
+        for (int i = 0; i < carteira.getValor().toString().length(); i++) {
+            char chr = carteira.getValor().toString().charAt(i);
+            for (int j = 0; j < charSearch.length; j++) {
+                if (charSearch[j] == chr) {
+                    throw new RuntimeException("O valor inserido não é válido, favor insira um valor sem caracter especial.");
+                }
+            }
+        }
+        return true;
+    }
+
+    public Boolean isRecebidoNotNull(Carteira carteira){
+        if (carteira.getValor() != null) {
+            return true;
+        } else {
+            throw new RuntimeException("O valor inserido não foi fornecido, favor insira um valor válido.");
         }
     }
 

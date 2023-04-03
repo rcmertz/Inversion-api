@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Papel;
 import uniamerica.com.inversion.repository.PapelRepository;
 
+import java.math.BigDecimal;
+
 @Service
 public class PapelService {
 
@@ -66,6 +68,35 @@ public class PapelService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public Boolean isRecebidoPositivo(Papel papel){
+        if (papel.getValor().compareTo(BigDecimal.valueOf(0.0)) != -1) {
+            return true;
+        } else {
+            throw new RuntimeException("O valor inserido é negativo, favor insira um valor válido.");
+        }
+    }
+
+    public Boolean isRecebidoCaracter(Papel papel) {
+        char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
+        for (int i = 0; i < papel.getValor().toString().length(); i++) {
+            char chr = papel.getValor().toString().charAt(i);
+            for (int j = 0; j < charSearch.length; j++) {
+                if (charSearch[j] == chr) {
+                    throw new RuntimeException("O valor inserido não é válido, favor insira um valor sem caracter especial.");
+                }
+            }
+        }
+        return true;
+    }
+
+    public Boolean isRecebidoNotNull(Papel papel){
+        if (papel.getValor() != null) {
+            return true;
+        } else {
+            throw new RuntimeException("O valor inserido não foi fornecido, favor insira um valor válido.");
         }
     }
 

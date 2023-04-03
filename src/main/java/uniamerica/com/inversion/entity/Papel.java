@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Entity
 @NoArgsConstructor
 @ToString
@@ -14,14 +16,14 @@ public class Papel extends AbstractEntity{
 
     @Getter @Setter
     @Column(name = "PAP_VALOR")
-    private String valor;
+    private BigDecimal valor;
 
     @Getter @Setter
     @Column(name = "PAP_QNT")
-    private Double quantidade;
+    private Integer quantidade;
 
     @Getter @Setter
-    @JoinColumn(name= "idTipo_Papel")
+    @JoinColumn(name= "3")
     @ManyToOne(fetch = FetchType.EAGER)
     private TipoPapel tipo;
 

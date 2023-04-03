@@ -24,7 +24,7 @@ public class Carteira extends AbstractEntity{
 
     @Getter @Setter
     @Column(name = "CAR_VALOR")
-    private Double valor;
+    private BigDecimal valor;
 
 //    @Getter @Setter
 //    @Column(name = "CAR_DATA_CRIACAO")
