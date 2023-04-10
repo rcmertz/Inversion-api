@@ -24,7 +24,7 @@ public class Operacao  extends AbstractEntity{
     @Column(name = "OPE_DATA")
     private LocalDate data;
 
-    //ENUM TIPO OPERAÇÃO
-
-
+    @Getter @Setter
+    @Column(name = "OPE_TIPO_OPERCAO")
+    private TipoOperacao tipoOperacao;
 }
