@@ -23,7 +23,7 @@ public class Papel extends AbstractEntity{
     private Integer quantidade;
 
     @Getter @Setter
-    @JoinColumn(name= "3")
+    @JoinColumn(name= "TIP_TIPO")
     @ManyToOne(fetch = FetchType.EAGER)
     private TipoPapel tipo;
 
