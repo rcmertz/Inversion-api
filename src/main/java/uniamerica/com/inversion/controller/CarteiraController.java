@@ -1,4 +1,4 @@
-package uniamerica.com.inversion.controller;
+package com.uniamerica.inversion.controller;
 
 
 import org.hibernate.HibernateException;
@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import uniamerica.com.inversion.entity.Carteira;
-import uniamerica.com.inversion.service.CarteiraService;
+import com.uniamerica.inversion.entity.Carteira;
+import com.uniamerica.inversion.service.CarteiraService;
 
 import java.util.HashMap;
 import java.util.Map;

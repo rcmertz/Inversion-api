@@ -1,15 +1,15 @@
 package uniamerica.com.inversion.service;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uniamerica.com.inversion.entity.Carteira;
-import uniamerica.com.inversion.entity.Papel;
-import uniamerica.com.inversion.entity.Usuario;
-import uniamerica.com.inversion.repository.CarteiraRepository;
+import com.uniamerica.inversion.entity.Carteira;
+import com.uniamerica.inversion.entity.Papel;
+import com.uniamerica.inversion.entity.Usuario;
+import com.uniamerica.inversion.repository.CarteiraRepository;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 

@@ -1,13 +1,13 @@
-package uniamerica.com.inversion.entity;
+package com.uniamerica.inversion.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.br.CPF;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class Usuario extends AbstractEntity{
     private String nome;
 
     @Getter @Setter
-    @CPF(message = "CPF NAO ENCONTRADO")
+//    CPF(message = "CPF NAO ENCONTRADO")
     @Column(name = "USU_CPF", unique = true, length = 15)
     private String cpf;
 

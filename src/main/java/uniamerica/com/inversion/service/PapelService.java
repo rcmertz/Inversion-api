@@ -1,13 +1,13 @@
-package uniamerica.com.inversion.service;
+package com.uniamerica.inversion.service;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uniamerica.com.inversion.entity.Papel;
-import uniamerica.com.inversion.repository.PapelRepository;
+import com.uniamerica.inversion.entity.Papel;
+import com.uniamerica.inversion.repository.PapelRepository;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 @Service

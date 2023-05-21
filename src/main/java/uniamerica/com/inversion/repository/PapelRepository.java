@@ -1,11 +1,11 @@
-package uniamerica.com.inversion.repository;
+package com.uniamerica.inversion.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import uniamerica.com.inversion.entity.Papel;
+import com.uniamerica.inversion.entity.Papel;
 
 @Repository
 public interface PapelRepository extends JpaRepository<Papel,Long> {

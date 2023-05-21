@@ -1,11 +1,11 @@
-package uniamerica.com.inversion.entity;
+package com.uniamerica.inversion.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -23,7 +23,7 @@ public class Papel extends AbstractEntity{
     private Integer quantidade;
 
     @Getter @Setter
-    @JoinColumn(name= "3")
+    @JoinColumn(name= "TIP_PAPEL")
     @ManyToOne(fetch = FetchType.EAGER)
     private TipoPapel tipo;
 

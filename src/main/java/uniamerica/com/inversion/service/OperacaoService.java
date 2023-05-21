@@ -1,13 +1,14 @@
-package uniamerica.com.inversion.service;
+package com.uniamerica.inversion.service;
 
-import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uniamerica.com.inversion.entity.Dividendo;
-import uniamerica.com.inversion.entity.Operacao;
-import uniamerica.com.inversion.repository.OperacaoRepository;
+import com.uniamerica.inversion.entity.Operacao;
+import com.uniamerica.inversion.repository.OperacaoRepository;
+
+import javax.transaction.Transactional;
 
 @Service
 public class OperacaoService {

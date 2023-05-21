@@ -1,13 +1,13 @@
-package uniamerica.com.inversion.entity;
+package com.uniamerica.inversion.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;

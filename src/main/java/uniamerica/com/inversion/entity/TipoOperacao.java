@@ -1,4 +1,4 @@
-package uniamerica.com.inversion.entity;
+package com.uniamerica.inversion.entity;
 
 public enum TipoOperacao {
 

@@ -1,4 +1,4 @@
-package uniamerica.com.inversion.controller;
+package com.uniamerica.inversion.controller;
 
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import uniamerica.com.inversion.entity.Operacao;
-import uniamerica.com.inversion.service.OperacaoService;
+import com.uniamerica.inversion.entity.Operacao;
+import com.uniamerica.inversion.service.OperacaoService;
 
 import java.util.HashMap;
 import java.util.Map;

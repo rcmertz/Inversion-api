@@ -1,10 +1,10 @@
-package uniamerica.com.inversion.repository;
+package com.uniamerica.inversion.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import uniamerica.com.inversion.entity.Dividendo;
+import com.uniamerica.inversion.entity.Dividendo;
 
 public interface DividendoRepository extends JpaRepository<Dividendo, Long> {
     @Modifying
