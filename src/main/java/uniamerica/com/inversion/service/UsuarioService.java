@@ -86,6 +86,13 @@ public class UsuarioService {
 
     //TESTE
     //Valida se ja existe o usuario no banco
+//    public boolean isCpfAlreadyRegistered(Usuario usuario) {
+//        if (usuario.getCpf() != usuarioRepository.getCpf()) {
+//            return true;
+//        } else {
+//            throw new RuntimeException("Usuario ja existe, verifique o CPF.");
+//        }
+//    }
 
 
 

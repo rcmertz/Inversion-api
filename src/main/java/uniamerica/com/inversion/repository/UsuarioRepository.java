@@ -16,6 +16,4 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     public void desativar(@Param("usuario") Long idUsuario);
 
 
-
-
 }
