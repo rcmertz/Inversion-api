@@ -73,7 +73,6 @@ public class UsuarioService {
         return true;
     }
 
-    //Valida se o CPF ja existe
 
     //Valida se o CPF nao e nulo
     public Boolean isCpfNotNull(Usuario usuario) {
@@ -84,16 +83,15 @@ public class UsuarioService {
         }
     }
 
-    //TESTE
-    //Valida se ja existe o usuario no banco
-//    public boolean isCpfAlreadyRegistered(Usuario usuario) {
-//        if (usuario.getCpf() != usuarioRepository.getCpf()) {
+    //Valida se ja existe o usuario no banco pelo CPF
+//    public Boolean isCpfExist(String cpf) {
+//        Usuario usuario = usuarioRepository.findByCpf(cpf);
+//        if (usuario == null) {
 //            return true;
 //        } else {
-//            throw new RuntimeException("Usuario ja existe, verifique o CPF.");
+//            throw new RuntimeException("Usuário já existe, verifique o CPF.");
 //        }
 //    }
-
 
 
     //Valida se o CPF tem 11 caracteres

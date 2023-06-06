@@ -9,6 +9,7 @@ import uniamerica.com.inversion.entity.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
+    Usuario findByCpf(String cpf);
     @Modifying
     @Query("UPDATE Usuario usuario " +
             "SET usuario.ativo = false " +

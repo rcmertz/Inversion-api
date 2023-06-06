@@ -11,19 +11,19 @@ import java.math.BigDecimal;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "PAPEL", schema = "public")
+@Table(name = "papel", schema = "public")
 public class Papel extends AbstractEntity{
 
     @Getter @Setter
-    @Column(name = "PAP_VALOR")
+    @Column(name = "valor")
     private BigDecimal valor;
 
     @Getter @Setter
-    @Column(name = "PAP_QNT")
+    @Column(name = "quantidade")
     private Integer quantidade;
 
     @Getter @Setter
-    @JoinColumn(name= "TIP_TIPO")
+    @JoinColumn(name= "tipo")
     @ManyToOne(fetch = FetchType.EAGER)
     private TipoPapel tipo;
 

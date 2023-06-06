@@ -13,18 +13,18 @@ import java.time.LocalDate;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "OPERACOES", schema = "public")
+@Table(name = "operacao", schema = "public")
 public class Operacao  extends AbstractEntity{
 
     @Getter @Setter
-    @Column(name = "OPE_VALOR")
+    @Column(name = "valor")
     private String valor;
 
     @Getter @Setter
-    @Column(name = "OPE_DATA")
+    @Column(name = "data")
     private LocalDate data;
 
     @Getter @Setter
-    @Column(name = "OPE_TIPO_OPERCAO")
+    @Column(name = "tipo_operacao")
     private TipoOperacao tipoOperacao;
 }

@@ -18,22 +18,22 @@ public class Rendimento extends AbstractEntity {
 
     @Getter
     @Setter
-    @Column(name = "DIV_PRECO")
+    @Column(name = "preco")
     private Double preco;
 
     @Getter
     @Setter
-    @Column(name = "DIV_QTDE")
+    @Column(name = "quantidade")
     private Double quantidade;
 
     @Getter
     @Setter
-    @Column(name = "DIV_DATA")
+    @Column(name = "data")
     private LocalDate data;
 
     @Getter
     @Setter
-    @Column(name = "DIV_DESCRICAO")
+    @Column(name = "descricao")
     private String descricao;
 
     public Rendimento(Double preco, Double quantidade, LocalDate data, String descricao) {
