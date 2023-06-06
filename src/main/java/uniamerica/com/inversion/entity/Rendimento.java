@@ -13,26 +13,30 @@ import java.time.LocalDate;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "DIVIDENDOS", schema = "public")
-public class Dividendo extends AbstractEntity{
+@Table(name = "rendimentos", schema = "public")
+public class Rendimento extends AbstractEntity {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     @Column(name = "DIV_PRECO")
     private Double preco;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     @Column(name = "DIV_QTDE")
     private Double quantidade;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     @Column(name = "DIV_DATA")
     private LocalDate data;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     @Column(name = "DIV_DESCRICAO")
     private String descricao;
 
-    public Dividendo(Double preco, Double quantidade, LocalDate data, String descricao) {
+    public Rendimento(Double preco, Double quantidade, LocalDate data, String descricao) {
         this.preco = preco;
         this.quantidade = quantidade;
         this.data = data;
