@@ -125,8 +125,22 @@ public class UsuarioService {
         }
     }
 
+    // Valida se o telefone informado possui letras. //
+    public Boolean isTelefoneNumber(Usuario usuario){
+        char[] charSearch = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        for (int i = 0; i < usuario.getTelefone().length(); i++) {
+            char chr = usuario.getTelefone().charAt(i);
+            for (int j = 0; j < charSearch.length; j++) {
+                if (charSearch[j] == chr) {
+                    return true;
+                }
+            }
+        }
+        throw new RuntimeException("O telefone contem letras.");
+    }
+
     //Valida se Telefone tem menos de 11 caracter
-    public Boolean isTelefoneMenor(Usuario usuario) {
+    public Boolean isTelefoneLength(Usuario usuario) {
         if (usuario.getTelefone().length() == 11) {
             return true;
         } else {
@@ -164,8 +178,9 @@ public class UsuarioService {
                 this.isCpfCaracter(usuario) == true &&
                 this.isCpfMenor(usuario) == true &&
                 this.isTelefoneCaracter(usuario) == true &&
-                this.isTelefoneMenor(usuario) == true &&
+                this.isTelefoneLength(usuario) == true &&
                 this.isTelefoneNotNull(usuario) == true &&
+                this.isTelefoneNumber(usuario) == true &&
                 this.isCpfNotNull(usuario) == true)
         {
             return true;
