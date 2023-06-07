@@ -26,12 +26,8 @@ public class Carteira extends AbstractEntity{
     @Column(name = "valor")
     private BigDecimal valor;
 
-//    @Getter @Setter
-//    @Column(name = "CAR_DATA_CRIACAO")
-//    private LocalDate dataCriacao;
-
-    @Getter @Setter
-    @Column(name = "tipo_carteira", length = 100)
-    private String tipo;
-
+    public Carteira(String descricao, BigDecimal valor) {
+        this.descricao = descricao;
+        this.valor = valor;
+    }
 }

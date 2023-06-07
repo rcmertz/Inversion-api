@@ -24,7 +24,7 @@ public class UsuarioService {
 
     @Transactional
     public Usuario insert(Usuario usuario){
-        if (this.validarCadastro(usuario) == true) {
+        if (this.validarRequest(usuario) == true) {
             this.usuarioRepository.save(usuario);
             return usuario;
         }else {
@@ -34,7 +34,7 @@ public class UsuarioService {
 
     @Transactional
     public void update (Long id, Usuario usuario){
-        if (id == usuario.getId()){
+        if (id == usuario.getId() && this.validarRequest(usuario) == true){
             this.usuarioRepository.save(usuario);
         }
         else{
@@ -44,7 +44,7 @@ public class UsuarioService {
 
     @Transactional
     public void desativar(Long id, Usuario usuario){
-        if (id == usuario.getId()){
+        if (id == usuario.getId() && this.validarRequest(usuario) == true){
             this.usuarioRepository.desativar(usuario.getId());
         }else {
             throw new RuntimeException("Falha ao Desativar o Usuario");
@@ -172,7 +172,7 @@ public class UsuarioService {
 //    }
 
     //Funcao para validar o cadastro do Usuario
-    public boolean validarCadastro(Usuario usuario){
+    public boolean validarRequest(Usuario usuario){
         if(this.isNomeNotNull(usuario) == true &&
                 this.isNomeCaracter(usuario) == true &&
                 this.isCpfCaracter(usuario) == true &&

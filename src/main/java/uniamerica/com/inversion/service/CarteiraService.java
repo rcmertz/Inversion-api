@@ -28,7 +28,7 @@ public class CarteiraService {
 
     @Transactional
     public void insert(Carteira carteira){
-        if (this.validarCadastro(carteira) == true) {
+        if (this.validarRequest(carteira) == true) {
             this.carteiraRepository.save(carteira);
         }else {
             throw new RuntimeException("Falha ao cadastrar uma carteira");
@@ -37,7 +37,7 @@ public class CarteiraService {
 
     @Transactional
     public void update (Long id, Carteira carteira){
-        if (id == carteira.getId()){
+        if (id == carteira.getId() && this.validarRequest(carteira) == true){
             this.carteiraRepository.save(carteira);
         }
         else{
@@ -47,7 +47,7 @@ public class CarteiraService {
 
     @Transactional
     public void desativar(Long id, Carteira carteira){
-        if (id == carteira.getId()){
+        if (id == carteira.getId() && this.validarRequest(carteira) == true){
             this.carteiraRepository.desativar(carteira.getId());
         }else {
             throw new RuntimeException("Falha ao Desativar a Carteira");
@@ -65,7 +65,7 @@ public class CarteiraService {
         }
     }
 
-    public boolean validarCadastro(Carteira carteira){
+    public boolean validarRequest(Carteira carteira){
         if(this.isCarteiraNotNull(carteira) == true)
         {
             return true;

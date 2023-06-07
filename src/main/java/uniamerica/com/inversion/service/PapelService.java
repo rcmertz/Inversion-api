@@ -24,7 +24,7 @@ public class PapelService {
 
     @Transactional
     public Papel insert(Papel papel) {
-        if (this.validarCadastro(papel) == true) {
+        if (this.validarRequest(papel) == true) {
             this.papelRepository.save(papel);
             return papel;
         } else {
@@ -34,7 +34,7 @@ public class PapelService {
 
     @Transactional
     public void update (Long id, Papel papel) {
-        if (id == papel.getId()) {
+        if (id == papel.getId() && this.validarRequest(papel) == true){
             this.papelRepository.save(papel);
         } else {
             throw new RuntimeException("Falha ao Atualizar o Papel");
@@ -43,7 +43,7 @@ public class PapelService {
 
     @Transactional
     public void desativar (Long id, Papel papel) {
-        if (id == papel.getId()) {
+        if (id == papel.getId() && this.validarRequest(papel) == true){
             this.papelRepository.save(papel);
         } else {
             throw new RuntimeException("Falha ao Desativar o usuario");
@@ -62,7 +62,7 @@ public class PapelService {
         }
     }
 
-    public Boolean validarCadastro(Papel papel){
+    public Boolean validarRequest(Papel papel){
         if (this.isPapelNotNull(papel) == true)
         {
             return true;

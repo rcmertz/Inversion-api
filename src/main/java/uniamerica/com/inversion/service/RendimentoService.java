@@ -24,7 +24,7 @@ public class RendimentoService {
 
     @Transactional
     public void insert(Rendimento rendimento) {
-        if (this.validarCadastro(rendimento) == true) {
+        if (this.validarRequest(rendimento) == true) {
             this.rendimentoRepository.save(rendimento);
         } else {
             throw new RuntimeException("Falha ao Cadastrar o Rendimento");
@@ -33,7 +33,7 @@ public class RendimentoService {
 
     @Transactional
     public void update(Long id, Rendimento rendimento) {
-        if (id == rendimento.getId()) {
+        if (id == rendimento.getId() && this.validarRequest(rendimento) == true){
             this.rendimentoRepository.save(rendimento);
         } else {
             throw new RuntimeException("Falha ao Atualizar o Rendimento");
@@ -42,7 +42,7 @@ public class RendimentoService {
 
     @Transactional
     public void desativar(Long id, Rendimento rendimento) {
-        if (id == rendimento.getId()) {
+        if (id == rendimento.getId() && this.validarRequest(rendimento) == true){
             this.rendimentoRepository.desativar(rendimento.getId());
         } else {
             throw new RuntimeException("Falha ao Desativar o Rendimento");
@@ -95,7 +95,7 @@ public class RendimentoService {
         return true;
     }
 
-    public boolean validarCadastro(Rendimento rendimento) {
+    public boolean validarRequest(Rendimento rendimento) {
         if (this.isPrecoNotNull(rendimento) == true &&
                 this.isQuantidadeNotNull(rendimento) == true &&
                 this.isPrecoCaracter(rendimento) == true &&
