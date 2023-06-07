@@ -1,13 +1,14 @@
 package uniamerica.com.inversion.service;
 
-import jakarta.transaction.Transactional;
-import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.UsuarioRepository;
+
+import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -30,6 +31,9 @@ public class UsuarioService {
         }else {
             throw new RuntimeException("Falha ao Cadastrar o Usuario");
         }
+    }
+    public Optional<Usuario> findByEmail(String username) {
+        return usuarioRepository.findByEmail(username);
     }
 
     @Transactional

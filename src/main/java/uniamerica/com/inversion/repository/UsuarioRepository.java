@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uniamerica.com.inversion.entity.Usuario;
+import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
@@ -16,6 +17,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     public void desativar(@Param("usuario") Long idUsuario);
 
 
-
-
+    @Query("SELECT u FROM Usuario u where u.email = :email")
+    Optional<Usuario> findByEmail(String email);
 }

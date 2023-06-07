@@ -1,6 +1,5 @@
 package uniamerica.com.inversion.service;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +9,7 @@ import uniamerica.com.inversion.entity.Papel;
 import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.CarteiraRepository;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 
