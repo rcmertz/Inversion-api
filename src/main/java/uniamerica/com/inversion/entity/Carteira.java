@@ -31,7 +31,7 @@ public class Carteira extends AbstractEntity{
 //    private LocalDate dataCriacao;
 
     @Getter @Setter
-    @Column(name = "tipo", length = 100)
+    @Column(name = "tipo_carteira", length = 100)
     private String tipo;
 
 }

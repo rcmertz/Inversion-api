@@ -50,8 +50,8 @@ public class RendimentoService {
     }
 
     public Boolean isPrecoNotNull(Rendimento rendimento) {
-        if (rendimento.getPreco() == null || rendimento.getPreco().toString().isEmpty()) {
-            throw new RuntimeException("O preço não foi fornecido, favor insira um preço valido.");
+        if (rendimento.getPreco_un() == null || rendimento.getPreco_un().toString().isEmpty()) {
+            throw new RuntimeException("O preço unitario não foi fornecido, favor insira um preço unitario valido.");
         } else {
             return true;
         }
@@ -68,8 +68,8 @@ public class RendimentoService {
     public Boolean isPrecoCaracter(Rendimento rendimento) {
         char[] charSearch = { '[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}',
                 '{', '~', ':', ']' };
-        for (int i = 0; i < rendimento.getPreco().toString().length(); i++) {
-            char chr = rendimento.getPreco().toString().charAt(i);
+        for (int i = 0; i < rendimento.getPreco_un().toString().length(); i++) {
+            char chr = rendimento.getPreco_un().toString().charAt(i);
             for (int j = 0; j < charSearch.length; j++) {
                 if (charSearch[j] == chr) {
                     throw new RuntimeException(
