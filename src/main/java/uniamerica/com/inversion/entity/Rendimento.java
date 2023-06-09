@@ -1,8 +1,6 @@
 package uniamerica.com.inversion.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,10 +34,16 @@ public class Rendimento extends AbstractEntity {
     @Column(name = "descricao")
     private String descricao;
 
-    public Rendimento(Double preco_un, Double quantidade, LocalDate data, String descricao) {
+    @Getter @Setter
+    @JoinColumn(name= "idPapel")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Papel papel;
+
+    public Rendimento(Double preco_un, Double quantidade, LocalDate data, String descricao, Papel papel) {
         this.preco_un = preco_un;
         this.quantidade = quantidade;
         this.data = data;
         this.descricao = descricao;
+        this.papel = papel;
     }
 }
