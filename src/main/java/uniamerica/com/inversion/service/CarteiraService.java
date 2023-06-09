@@ -66,7 +66,8 @@ public class CarteiraService {
     }
 
     public boolean validarRequest(Carteira carteira){
-        if(this.isCarteiraNotNull(carteira) == true)
+        if(this.isCarteiraNotNull(carteira) == true &&
+            this.isValorValid(carteira) == true)
         {
             return true;
         }else {
@@ -74,23 +75,7 @@ public class CarteiraService {
         }
     }
 
-    public Boolean isDescricaoNotNull(Carteira carteira) {
-        if (carteira.getDescricao() == null || carteira.getDescricao().isEmpty()) {
-            throw new RuntimeException("Favor inserir uma descricao.");
-        } else {
-            return true;
-        }
-    }
-
-    public Boolean isRecebidoPositivo(Carteira carteira){
-        if (carteira.getValor().compareTo(BigDecimal.valueOf(0.0)) != -1) {
-            return true;
-        } else {
-            throw new RuntimeException("O valor inserido é negativo, favor insira um valor válido.");
-        }
-    }
-
-    public Boolean isRecebidoCaracter(Carteira carteira) {
+    public Boolean isValorValid(Carteira carteira) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
         for (int i = 0; i < carteira.getValor().toString().length(); i++) {
             char chr = carteira.getValor().toString().charAt(i);
@@ -102,14 +87,5 @@ public class CarteiraService {
         }
         return true;
     }
-
-    public Boolean isRecebidoNotNull(Carteira carteira){
-        if (carteira.getValor() != null) {
-            return true;
-        } else {
-            throw new RuntimeException("O valor inserido não foi fornecido, favor insira um valor válido.");
-        }
-    }
-
 
 }

@@ -63,7 +63,9 @@ public class PapelService {
     }
 
     public Boolean validarRequest(Papel papel){
-        if (this.isPapelNotNull(papel) == true)
+        if (this.isPapelNotNull(papel) == true &&
+            this.isValorNegativo(papel) == true &&
+            this.isValorCaracter(papel) == true)
         {
             return true;
         } else {
@@ -71,7 +73,7 @@ public class PapelService {
         }
     }
 
-    public Boolean isRecebidoPositivo(Papel papel){
+    public Boolean isValorNegativo(Papel papel){
         if (papel.getValor().compareTo(BigDecimal.valueOf(0.0)) != -1) {
             return true;
         } else {
@@ -79,7 +81,7 @@ public class PapelService {
         }
     }
 
-    public Boolean isRecebidoCaracter(Papel papel) {
+    public Boolean isValorCaracter(Papel papel) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
         for (int i = 0; i < papel.getValor().toString().length(); i++) {
             char chr = papel.getValor().toString().charAt(i);
@@ -92,12 +94,5 @@ public class PapelService {
         return true;
     }
 
-    public Boolean isRecebidoNotNull(Papel papel){
-        if (papel.getValor() != null) {
-            return true;
-        } else {
-            throw new RuntimeException("O valor inserido não foi fornecido, favor insira um valor válido.");
-        }
-    }
 
 }
