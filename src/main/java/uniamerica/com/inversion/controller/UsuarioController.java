@@ -35,7 +35,7 @@ public class UsuarioController {
     public ResponseEntity<Page<Usuario>> listByAllPage(Pageable pageable) {
         return ResponseEntity.ok().body(this.usuarioService.listAll(pageable));
     }
-    @PostMapping
+    @PostMapping("/cadastro")
     public ResponseEntity<?> insert(@RequestBody Usuario usuario) {
         try {
             this.usuarioService.insert(usuario);

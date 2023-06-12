@@ -30,7 +30,7 @@ public class Usuario extends AbstractEntity{
     private String telefone;
 
     @Getter @Setter
-    @Column(name = "email", length = 50)
+    @Column(name = "email", unique = true, length = 100)
     private String email;
 
     @Getter @Setter
