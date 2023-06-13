@@ -24,7 +24,7 @@ public class PapelService {
 
     @Transactional
     public Papel insert(Papel papel) {
-        if (this.validarCadastro(papel) == true) {
+        if (this.validarRequest(papel) == true) {
             this.papelRepository.save(papel);
             return papel;
         } else {
@@ -34,7 +34,7 @@ public class PapelService {
 
     @Transactional
     public void update (Long id, Papel papel) {
-        if (id == papel.getId()) {
+        if (id == papel.getId() && this.validarRequest(papel) == true){
             this.papelRepository.save(papel);
         } else {
             throw new RuntimeException("Falha ao Atualizar o Papel");
@@ -43,7 +43,7 @@ public class PapelService {
 
     @Transactional
     public void desativar (Long id, Papel papel) {
-        if (id == papel.getId()) {
+        if (id == papel.getId() && this.validarRequest(papel) == true){
             this.papelRepository.save(papel);
         } else {
             throw new RuntimeException("Falha ao Desativar o usuario");
@@ -62,8 +62,10 @@ public class PapelService {
         }
     }
 
-    public Boolean validarCadastro(Papel papel){
-        if (this.isPapelNotNull(papel) == true)
+    public Boolean validarRequest(Papel papel){
+        if (this.isPapelNotNull(papel) == true &&
+                this.isValorNegativo(papel) == true &&
+                this.isValorCaracter(papel) == true)
         {
             return true;
         } else {
@@ -71,7 +73,7 @@ public class PapelService {
         }
     }
 
-    public Boolean isRecebidoPositivo(Papel papel){
+    public Boolean isValorNegativo(Papel papel){
         if (papel.getValor().compareTo(BigDecimal.valueOf(0.0)) != -1) {
             return true;
         } else {
@@ -79,7 +81,7 @@ public class PapelService {
         }
     }
 
-    public Boolean isRecebidoCaracter(Papel papel) {
+    public Boolean isValorCaracter(Papel papel) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
         for (int i = 0; i < papel.getValor().toString().length(); i++) {
             char chr = papel.getValor().toString().charAt(i);
@@ -90,14 +92,6 @@ public class PapelService {
             }
         }
         return true;
-    }
-
-    public Boolean isRecebidoNotNull(Papel papel){
-        if (papel.getValor() != null) {
-            return true;
-        } else {
-            throw new RuntimeException("O valor inserido não foi fornecido, favor insira um valor válido.");
-        }
     }
 
 }

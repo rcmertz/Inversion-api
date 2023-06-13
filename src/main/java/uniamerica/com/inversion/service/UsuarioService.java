@@ -25,20 +25,21 @@ public class UsuarioService {
 
     @Transactional
     public Usuario insert(Usuario usuario){
-        if (this.validarCadastro(usuario) == true) {
+        if (this.validarRequest(usuario) == true) {
             this.usuarioRepository.save(usuario);
             return usuario;
         }else {
             throw new RuntimeException("Falha ao Cadastrar o Usuario");
         }
     }
-    public Optional<Usuario> findByEmail(String username) {
+
+    public Usuario findByEmail(String username) {
         return usuarioRepository.findByEmail(username);
     }
 
     @Transactional
     public void update (Long id, Usuario usuario){
-        if (id == usuario.getId()){
+        if (id == usuario.getId() && this.validarRequest(usuario) == true){
             this.usuarioRepository.save(usuario);
         }
         else{
@@ -48,7 +49,7 @@ public class UsuarioService {
 
     @Transactional
     public void desativar(Long id, Usuario usuario){
-        if (id == usuario.getId()){
+        if (id == usuario.getId() && this.validarRequest(usuario) == true){
             this.usuarioRepository.desativar(usuario.getId());
         }else {
             throw new RuntimeException("Falha ao Desativar o Usuario");
@@ -77,7 +78,6 @@ public class UsuarioService {
         return true;
     }
 
-    //Valida se o CPF ja existe
 
     //Valida se o CPF nao e nulo
     public Boolean isCpfNotNull(Usuario usuario) {
@@ -88,9 +88,15 @@ public class UsuarioService {
         }
     }
 
-    //TESTE
-    //Valida se ja existe o usuario no banco
-
+    //Valida se ja existe o usuario no banco pelo CPF
+//    public Boolean isCpfExist(String cpf) {
+//        Usuario usuario = usuarioRepository.findByCpf(cpf);
+//        if (usuario == null) {
+//            return true;
+//        } else {
+//            throw new RuntimeException("Usuário já existe, verifique o CPF.");
+//        }
+//    }
 
 
     //Valida se o CPF tem 11 caracteres
@@ -124,8 +130,22 @@ public class UsuarioService {
         }
     }
 
+    // Valida se o telefone informado possui letras. //
+    public Boolean isTelefoneNumber(Usuario usuario){
+        char[] charSearch = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        for (int i = 0; i < usuario.getTelefone().length(); i++) {
+            char chr = usuario.getTelefone().charAt(i);
+            for (int j = 0; j < charSearch.length; j++) {
+                if (charSearch[j] == chr) {
+                    return true;
+                }
+            }
+        }
+        throw new RuntimeException("O telefone contem letras.");
+    }
+
     //Valida se Telefone tem menos de 11 caracter
-    public Boolean isTelefoneMenor(Usuario usuario) {
+    public Boolean isTelefoneLength(Usuario usuario) {
         if (usuario.getTelefone().length() == 11) {
             return true;
         } else {
@@ -157,14 +177,15 @@ public class UsuarioService {
 //    }
 
     //Funcao para validar o cadastro do Usuario
-    public boolean validarCadastro(Usuario usuario){
+    public boolean validarRequest(Usuario usuario){
         if(this.isNomeNotNull(usuario) == true &&
                 this.isNomeCaracter(usuario) == true &&
                 this.isCpfCaracter(usuario) == true &&
                 this.isCpfMenor(usuario) == true &&
                 this.isTelefoneCaracter(usuario) == true &&
-                this.isTelefoneMenor(usuario) == true &&
+                this.isTelefoneLength(usuario) == true &&
                 this.isTelefoneNotNull(usuario) == true &&
+                this.isTelefoneNumber(usuario) == true &&
                 this.isCpfNotNull(usuario) == true)
         {
             return true;

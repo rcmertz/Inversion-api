@@ -15,23 +15,19 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "CARTEIRA", schema = "public")
+@Table(name = "carteira", schema = "public")
 public class Carteira extends AbstractEntity{
 
     @Getter @Setter
-    @Column(name = "CAR_DESCRICAO", length = 100)
+    @Column(name = "descricao", length = 100)
     private String descricao;
 
     @Getter @Setter
-    @Column(name = "CAR_VALOR")
+    @Column(name = "valor")
     private BigDecimal valor;
 
-//    @Getter @Setter
-//    @Column(name = "CAR_DATA_CRIACAO")
-//    private LocalDate dataCriacao;
-
-    @Getter @Setter
-    @Column(name = "CAR_TIPO", length = 100)
-    private String tipo;
-
+    public Carteira(String descricao, BigDecimal valor) {
+        this.descricao = descricao;
+        this.valor = valor;
+    }
 }

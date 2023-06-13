@@ -28,7 +28,7 @@ public class CarteiraService {
 
     @Transactional
     public void insert(Carteira carteira){
-        if (this.validarCadastro(carteira) == true) {
+        if (this.validarRequest(carteira) == true) {
             this.carteiraRepository.save(carteira);
         }else {
             throw new RuntimeException("Falha ao cadastrar uma carteira");
@@ -37,7 +37,7 @@ public class CarteiraService {
 
     @Transactional
     public void update (Long id, Carteira carteira){
-        if (id == carteira.getId()){
+        if (id == carteira.getId() && this.validarRequest(carteira) == true){
             this.carteiraRepository.save(carteira);
         }
         else{
@@ -47,7 +47,7 @@ public class CarteiraService {
 
     @Transactional
     public void desativar(Long id, Carteira carteira){
-        if (id == carteira.getId()){
+        if (id == carteira.getId() && this.validarRequest(carteira) == true){
             this.carteiraRepository.desativar(carteira.getId());
         }else {
             throw new RuntimeException("Falha ao Desativar a Carteira");
@@ -65,8 +65,9 @@ public class CarteiraService {
         }
     }
 
-    public boolean validarCadastro(Carteira carteira){
-        if(this.isCarteiraNotNull(carteira) == true)
+    public boolean validarRequest(Carteira carteira){
+        if(this.isCarteiraNotNull(carteira) == true &&
+                this.isValorValid(carteira) == true)
         {
             return true;
         }else {
@@ -74,23 +75,7 @@ public class CarteiraService {
         }
     }
 
-    public Boolean isDescricaoNotNull(Carteira carteira) {
-        if (carteira.getDescricao() == null || carteira.getDescricao().isEmpty()) {
-            throw new RuntimeException("Favor inserir uma descricao.");
-        } else {
-            return true;
-        }
-    }
-
-    public Boolean isRecebidoPositivo(Carteira carteira){
-        if (carteira.getValor().compareTo(BigDecimal.valueOf(0.0)) != -1) {
-            return true;
-        } else {
-            throw new RuntimeException("O valor inserido é negativo, favor insira um valor válido.");
-        }
-    }
-
-    public Boolean isRecebidoCaracter(Carteira carteira) {
+    public Boolean isValorValid(Carteira carteira) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
         for (int i = 0; i < carteira.getValor().toString().length(); i++) {
             char chr = carteira.getValor().toString().charAt(i);
@@ -102,14 +87,5 @@ public class CarteiraService {
         }
         return true;
     }
-
-    public Boolean isRecebidoNotNull(Carteira carteira){
-        if (carteira.getValor() != null) {
-            return true;
-        } else {
-            throw new RuntimeException("O valor inserido não foi fornecido, favor insira um valor válido.");
-        }
-    }
-
 
 }
