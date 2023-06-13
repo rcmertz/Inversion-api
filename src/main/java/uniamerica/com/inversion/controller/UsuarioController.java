@@ -12,12 +12,14 @@ import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uniamerica.com.inversion.entity.Usuario;
+import uniamerica.com.inversion.repository.UsuarioRepository;
 import uniamerica.com.inversion.service.UsuarioService;
 
 import java.io.IOException;
@@ -35,6 +37,8 @@ public class UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping("/{idUsuario}")
     public ResponseEntity<Usuario> findById(@PathVariable("idUsuario") Long idUsuario) {
@@ -69,6 +73,21 @@ public class UsuarioController {
             // return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+//    @PostMapping("/login")
+//    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+//        // Verifica se o usuário existe na base de dados
+//        Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail());
+//        if (usuario == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado");
+//        }
+//        // Verifica se a senha está correta
+//        if (!usuario.getSenha().equals(loginRequest.getSenha())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta");
+//        }
+//        // Autenticação bem-sucedida
+//        return ResponseEntity.ok("Login realizado com sucesso");
+//    }
 
 
     @PutMapping("/{idUsuario}")
