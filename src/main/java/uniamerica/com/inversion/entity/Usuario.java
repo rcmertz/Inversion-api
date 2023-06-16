@@ -19,7 +19,7 @@ import java.util.Collection;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "USUARIO", schema = "public") //Seguir este padrão para tabelas e campos
+@Table(name = "usuario", schema = "public") //Seguir este padrão para tabelas e campos
 public class Usuario extends AbstractEntity implements UserDetails {
 
 

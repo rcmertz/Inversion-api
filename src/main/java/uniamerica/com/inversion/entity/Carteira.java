@@ -20,14 +20,14 @@ public class Carteira extends AbstractEntity{
 
     @Getter @Setter
     @Column(name = "descricao", length = 100)
-    private String descricao;
+    private String descricaoCarteira;
 
     @Getter @Setter
     @Column(name = "valor")
-    private BigDecimal valor;
+    private BigDecimal valorCarteira;
 
-    public Carteira(String descricao, BigDecimal valor) {
-        this.descricao = descricao;
-        this.valor = valor;
+    public Carteira(String descricaoCarteira, BigDecimal valorCarteira) {
+        this.descricaoCarteira = descricaoCarteira;
+        this.valorCarteira = valorCarteira;
     }
 }

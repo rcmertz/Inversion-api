@@ -15,6 +15,11 @@ import java.math.BigDecimal;
 public class Papel extends AbstractEntity{
 
     @Getter @Setter
+    @JoinColumn(name = "carteira")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Carteira carteira;
+
+    @Getter @Setter
     @Column(name = "valor")
     private BigDecimal valor;
 
@@ -30,10 +35,11 @@ public class Papel extends AbstractEntity{
     @Column(name = "operacao")
     private String operacao;
 
-    public Papel(BigDecimal valor, Integer quantidade, String tipo, String operacao) {
+    public Papel(BigDecimal valor, Integer quantidade, String tipo, String operacao, Carteira carteira) {
         this.valor = valor;
         this.quantidade = quantidade;
         this.tipo = tipo;
         this.operacao = operacao;
+        this.carteira = carteira;
     }
 }

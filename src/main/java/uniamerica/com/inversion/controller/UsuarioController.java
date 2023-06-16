@@ -73,23 +73,6 @@ public class UsuarioController {
             // return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-//    @PostMapping("/login")
-//    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-//        // Verifica se o usuário existe na base de dados
-//        Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail());
-//        if (usuario == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado");
-//        }
-//        // Verifica se a senha está correta
-//        if (!usuario.getSenha().equals(loginRequest.getSenha())) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta");
-//        }
-//        // Autenticação bem-sucedida
-//        return ResponseEntity.ok("Login realizado com sucesso");
-//    }
-
-
     @PutMapping("/{idUsuario}")
     public ResponseEntity<?> update(@PathVariable Long idUsuario, @RequestBody Usuario usuario) {
         try {

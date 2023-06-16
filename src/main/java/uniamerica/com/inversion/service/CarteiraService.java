@@ -58,7 +58,7 @@ public class CarteiraService {
 
     //Valida se Nome da carteira nao e vazio ou nulo
     public Boolean isCarteiraNotNull(Carteira carteira) {
-        if (carteira.getDescricao() == null || carteira.getDescricao().isEmpty()) {
+        if (carteira.getDescricaoCarteira() == null || carteira.getDescricaoCarteira().isEmpty()) {
             throw new RuntimeException("A descrição da carteira não foi fornecido, favor inserir uma descriçao.");
         } else {
             return true;
@@ -77,8 +77,8 @@ public class CarteiraService {
 
     public Boolean isValorValid(Carteira carteira) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
-        for (int i = 0; i < carteira.getValor().toString().length(); i++) {
-            char chr = carteira.getValor().toString().charAt(i);
+        for (int i = 0; i < carteira.getValorCarteira().toString().length(); i++) {
+            char chr = carteira.getValorCarteira().toString().charAt(i);
             for (int j = 0; j < charSearch.length; j++) {
                 if (charSearch[j] == chr) {
                     throw new RuntimeException("O valor inserido não é válido, favor insira um valor sem caracter especial.");

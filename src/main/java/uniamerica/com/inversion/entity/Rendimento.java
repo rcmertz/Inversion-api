@@ -14,6 +14,11 @@ import java.time.LocalDate;
 @Table(name = "rendimento", schema = "public")
 public class Rendimento extends AbstractEntity {
 
+    @Getter @Setter
+    @JoinColumn(name= "idPapel")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Papel papel;
+
     @Getter
     @Setter
     @Column(name = "preco_un")
@@ -34,16 +39,10 @@ public class Rendimento extends AbstractEntity {
     @Column(name = "descricao")
     private String descricao;
 
-    @Getter @Setter
-    @JoinColumn(name= "idPapel")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Papel papel;
-
     public Rendimento(Double preco_un, Double quantidade, LocalDate data, String descricao, Papel papel) {
         this.preco_un = preco_un;
         this.quantidade = quantidade;
         this.data = data;
         this.descricao = descricao;
-        this.papel = papel;
     }
 }
