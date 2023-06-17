@@ -15,9 +15,9 @@ import java.time.LocalDate;
 public class Rendimento extends AbstractEntity {
 
     @Getter @Setter
-    @JoinColumn(name= "idPapel")
+    @JoinColumn(name= "idInvestimento")
     @ManyToOne(fetch = FetchType.EAGER)
-    private Papel papel;
+    private Investimento investimento;
 
     @Getter
     @Setter
@@ -27,7 +27,7 @@ public class Rendimento extends AbstractEntity {
     @Getter
     @Setter
     @Column(name = "quantidade")
-    private Double quantidade;
+    private Integer quantidade;
 
     @Getter
     @Setter
@@ -39,7 +39,8 @@ public class Rendimento extends AbstractEntity {
     @Column(name = "descricao")
     private String descricao;
 
-    public Rendimento(Double preco_un, Double quantidade, LocalDate data, String descricao, Papel papel) {
+    public Rendimento(Investimento investimento, Double preco_un, Integer quantidade, LocalDate data, String descricao) {
+        this.investimento = investimento;
         this.preco_un = preco_un;
         this.quantidade = quantidade;
         this.data = data;

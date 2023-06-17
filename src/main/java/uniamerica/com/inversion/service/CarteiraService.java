@@ -5,12 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Carteira;
-import uniamerica.com.inversion.entity.Papel;
-import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.CarteiraRepository;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 
 
 @Service

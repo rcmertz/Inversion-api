@@ -24,9 +24,9 @@ public class Carteira extends AbstractEntity{
 
     @Getter @Setter
     @Column(name = "valor")
-    private BigDecimal valorCarteira;
+    private Double valorCarteira;
 
-    public Carteira(String descricaoCarteira, BigDecimal valorCarteira) {
+    public Carteira(String descricaoCarteira, Double valorCarteira) {
         this.descricaoCarteira = descricaoCarteira;
         this.valorCarteira = valorCarteira;
     }

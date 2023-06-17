@@ -5,15 +5,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import uniamerica.com.inversion.entity.Papel;
+import uniamerica.com.inversion.entity.Investimento;
 
 @Repository
-public interface PapelRepository extends JpaRepository<Papel,Long> {
+public interface InvestimentoRepository extends JpaRepository<Investimento,Long> {
 
     @Modifying
-    @Query("UPDATE Papel papel " +
-            "SET papel.ativo = false " +
-            "WHERE papel.id = :papel")
-    public void desativar(@Param("papel") Long idPapel);
+    @Query("UPDATE Investimento investimento " +
+            "SET investimento.ativo = false " +
+            "WHERE investimento.id = :investimento")
+    public void desativar(@Param("investimento") Long idInvestimento);
 
 }
