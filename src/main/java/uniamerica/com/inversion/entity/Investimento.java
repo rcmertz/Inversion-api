@@ -1,5 +1,6 @@
 package uniamerica.com.inversion.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -20,16 +22,22 @@ public class Investimento extends AbstractEntity{
     private Carteira carteira;
 
     @Getter @Setter
-    @Column(name = "nome")
+    @Column(name = "nome", unique = true)
     private String nomeInvestimento;
 
     @Getter @Setter
     @Column(name = "valor")
     private Double valorInvestimento;
 
-    public Investimento(Carteira carteira, String nomeInvestimento, Double valorInvestimento) {
+    @Getter @Setter
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "data")
+    private LocalDate data;
+
+    public Investimento(Carteira carteira, String nomeInvestimento, Double valorInvestimento, LocalDate data) {
         this.carteira = carteira;
         this.nomeInvestimento = nomeInvestimento;
         this.valorInvestimento = valorInvestimento;
+        this.data = data;
     }
 }

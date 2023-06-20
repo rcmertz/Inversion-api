@@ -1,5 +1,6 @@
 package uniamerica.com.inversion.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,18 +20,16 @@ public class Rendimento extends AbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private Investimento investimento;
 
-    @Getter
-    @Setter
+    @Getter @Setter
     @Column(name = "preco_un")
     private Double preco_un;
 
-    @Getter
-    @Setter
+    @Getter @Setter
     @Column(name = "quantidade")
     private Integer quantidade;
 
-    @Getter
-    @Setter
+    @Getter @Setter
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data")
     private LocalDate data;
 
