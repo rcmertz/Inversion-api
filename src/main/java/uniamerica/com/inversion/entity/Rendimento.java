@@ -34,16 +34,10 @@ public class Rendimento extends AbstractEntity {
     @Column(name = "data")
     private LocalDate data;
 
-    @Getter
-    @Setter
-    @Column(name = "descricao")
-    private String descricao;
-
-    public Rendimento(Investimento investimento, Double preco_un, Integer quantidade, LocalDate data, String descricao) {
+    public Rendimento(Investimento investimento, Double preco_un, Integer quantidade, LocalDate data) {
         this.investimento = investimento;
         this.preco_un = preco_un;
         this.quantidade = quantidade;
         this.data = data;
-        this.descricao = descricao;
     }
 }
