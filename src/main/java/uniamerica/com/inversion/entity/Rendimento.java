@@ -16,9 +16,9 @@ import java.time.LocalDate;
 public class Rendimento extends AbstractEntity {
 
     @Getter @Setter
-    @JoinColumn(name= "idInvestimento")
+    @JoinColumn(name= "idOperacao")
     @ManyToOne(fetch = FetchType.EAGER)
-    private Investimento investimento;
+    private Operacao operacao;
 
     @Getter @Setter
     @Column(name = "preco_un")
@@ -29,12 +29,11 @@ public class Rendimento extends AbstractEntity {
     private Integer quantidade;
 
     @Getter @Setter
-    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data")
     private LocalDate data;
 
-    public Rendimento(Investimento investimento, Double preco_un, Integer quantidade, LocalDate data) {
-        this.investimento = investimento;
+    public Rendimento(Operacao operacao, Double preco_un, Integer quantidade, LocalDate data) {
+        this.operacao = operacao;
         this.preco_un = preco_un;
         this.quantidade = quantidade;
         this.data = data;

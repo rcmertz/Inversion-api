@@ -30,7 +30,6 @@ public class Investimento extends AbstractEntity{
     private Double valorInvestimento;
 
     @Getter @Setter
-    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data")
     private LocalDate data;
 
