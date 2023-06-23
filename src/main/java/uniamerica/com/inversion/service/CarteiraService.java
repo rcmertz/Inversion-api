@@ -51,7 +51,7 @@ public class CarteiraService {
         }
     }
 
-    //** Validacao do Carteira **//
+    //** VALIDAÇÕES CARTEIRA **//
 
     //Valida se Nome da carteira nao e vazio ou nulo
     public Boolean isCarteiraNotNull(Carteira carteira) {
@@ -62,16 +62,7 @@ public class CarteiraService {
         }
     }
 
-    public boolean validarRequest(Carteira carteira){
-        if(this.isCarteiraNotNull(carteira) == true &&
-                this.isValorValid(carteira) == true)
-        {
-            return true;
-        }else {
-            return false;
-        }
-    }
-
+    //Valida se tem caracter especial no nome da carteira
     public Boolean isValorValid(Carteira carteira) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
         for (int i = 0; i < carteira.getValorCarteira().toString().length(); i++) {
@@ -83,6 +74,16 @@ public class CarteiraService {
             }
         }
         return true;
+    }
+
+    public boolean validarRequest(Carteira carteira){
+        if(this.isCarteiraNotNull(carteira) == true &&
+                this.isValorValid(carteira) == true)
+        {
+            return true;
+        }else {
+            return false;
+        }
     }
 
 }

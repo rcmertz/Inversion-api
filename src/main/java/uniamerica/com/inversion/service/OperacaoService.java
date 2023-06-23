@@ -53,7 +53,6 @@ public class OperacaoService {
     //** Validacao do Operacao **//
 
     //Valida se a quantidade do operacao nao foi inserido vazio ou nulo
-
     public Boolean isOperacaoNotNull(Operacao operacao) {
         if (operacao.getQuantidade() == null) {
             throw new RuntimeException("A quantidade da operacao esta vazia, favor insira a quantidade da operacao");
@@ -62,17 +61,7 @@ public class OperacaoService {
         }
     }
 
-    public Boolean validarRequest(Operacao operacao){
-        if (this.isOperacaoNotNull(operacao) == true &&
-                this.isValorNegativo(operacao) == true &&
-                this.isValorCaracter(operacao) == true)
-        {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    //Valida se o valor inserido na operação é negativo
     public Boolean isValorNegativo(Operacao operacao){
         if (operacao.getValor().compareTo(BigDecimal.valueOf(0.0)) != -1) {
             return true;
@@ -81,6 +70,7 @@ public class OperacaoService {
         }
     }
 
+    //Valida se o campo valor chegou com caracter especial
     public Boolean isValorCaracter(Operacao operacao) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
         for (int i = 0; i < operacao.getValor().toString().length(); i++) {
@@ -92,6 +82,17 @@ public class OperacaoService {
             }
         }
         return true;
+    }
+
+    public Boolean validarRequest(Operacao operacao){
+        if (this.isOperacaoNotNull(operacao) == true &&
+                this.isValorNegativo(operacao) == true &&
+                this.isValorCaracter(operacao) == true)
+        {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

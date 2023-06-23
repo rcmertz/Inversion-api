@@ -78,6 +78,7 @@ public class UsuarioService {
         return true;
     }
 
+    //** VALIDAÇÕES USUARIO **//
 
     //Valida se o CPF nao e nulo
     public Boolean isCpfNotNull(Usuario usuario) {
@@ -97,7 +98,6 @@ public class UsuarioService {
 //            throw new RuntimeException("Usuário já existe, verifique o CPF.");
 //        }
 //    }
-
 
     //Valida se o CPF tem 11 caracteres
     public Boolean isCpfMenor(Usuario usuario) {

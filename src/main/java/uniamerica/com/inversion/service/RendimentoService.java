@@ -51,6 +51,9 @@ public class RendimentoService {
         }
     }
 
+    //** VALIDAÇÕES RENDIMENTO **//
+
+    //Valida se o valor inserido no rendimento não é nulo
     public Boolean isPrecoNotNull(Rendimento rendimento) {
         if (rendimento.getPreco_un() == null || rendimento.getPreco_un().toString().isEmpty()) {
             throw new RuntimeException("O preço unitario não foi fornecido, favor insira um preço unitario valido.");
@@ -59,6 +62,7 @@ public class RendimentoService {
         }
     }
 
+    //Valida se a quantida inserida no rendimento não é nulo
     public Boolean isQuantidadeNotNull(Rendimento rendimento) {
         if (rendimento.getQuantidade() == null || rendimento.getQuantidade().toString().isEmpty()) {
             throw new RuntimeException("A Quantidade não foi fornecida, favor insira uma quantidade valida.");
@@ -67,6 +71,7 @@ public class RendimentoService {
         }
     }
 
+    //Valida se o preço inserido no rendimento não chegou com caracter especial
     public Boolean isPrecoCaracter(Rendimento rendimento) {
         char[] charSearch = { '[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}',
                 '{', '~', ':', ']' };
@@ -82,6 +87,7 @@ public class RendimentoService {
         return true;
     }
 
+    //Valida se a quantidade inserida no rendimento não chegou com caracter especial
     public Boolean isQuantidadeCaracter(Rendimento rendimento) {
         char[] charSearch = { '[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}',
                 '{', '~', ':', ']' };
