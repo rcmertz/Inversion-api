@@ -23,7 +23,8 @@ public class InvestimentoService {
 
     @Transactional
     public Investimento insert(Investimento investimento) {
-        if (this.validarRequest(investimento) == true) {
+        if (this.validarRequest(investimento) == true &&
+            this.isInvestimentoExist(investimento) == true) {
             this.investimentoRepository.save(investimento);
             return investimento;
         } else {
@@ -64,18 +65,37 @@ public class InvestimentoService {
         return true;
     }
 
-    public Boolean isInvestimentoNotNull(Investimento investimento) {
+//    public Boolean isInvestimentoNotNull(Investimento investimento) {
+//        if (investimento.getNomeInvestimento() == null || investimento.getNomeInvestimento().isEmpty()) {
+//            throw new RuntimeException("O nome do investimento não foi fornecido, favor inserir um nome.");
+//        } else {
+//            return true;
+//        }
+//    }
+
+    public Boolean isInvestimentoExist(Investimento investimento) {
         if (investimento.getNomeInvestimento() == null || investimento.getNomeInvestimento().isEmpty()) {
             throw new RuntimeException("O nome do investimento não foi fornecido, favor inserir um nome.");
         } else {
-            return true;
+            // Verificar se já existe um investimento com o mesmo nome
+            Investimento investimentoExistente = investimentoRepository.findByNomeInvestimento(investimento.getNomeInvestimento());
+
+            if (investimentoExistente != null) {
+                // Verificar se o investimento existente está ativo
+                if (investimentoExistente.isAtivo()) {
+                    throw new RuntimeException("Já existe um investimento ativo com o mesmo nome.");
+                } else {
+                    // Permitir a inserção caso o investimento existente esteja inativo
+                    return true;
+                }
+            } else {
+                return true;
+            }
         }
     }
 
     public Boolean validarRequest(Investimento investimento){
-        if (this.isInvestimentoNotNull(investimento) == true &&
-                this.isValorCaracter(investimento) == true)
-        {
+        if (this.isValorCaracter(investimento) == true) {
             return true;
         } else {
             return false;

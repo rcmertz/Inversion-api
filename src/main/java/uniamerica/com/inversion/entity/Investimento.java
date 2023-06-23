@@ -22,7 +22,7 @@ public class Investimento extends AbstractEntity{
     private Carteira carteira;
 
     @Getter @Setter
-    @Column(name = "nome", unique = true)
+    @Column(name = "nome")
     private String nomeInvestimento;
 
     @Getter @Setter
