@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -30,9 +31,9 @@ public class Rendimento extends AbstractEntity {
 
     @Getter @Setter
     @Column(name = "data")
-    private LocalDate data;
+    private LocalDateTime data;
 
-    public Rendimento(Operacao operacao, Double preco_un, Integer quantidade, LocalDate data) {
+    public Rendimento(Operacao operacao, Double preco_un, Integer quantidade, LocalDateTime data) {
         this.operacao = operacao;
         this.preco_un = preco_un;
         this.quantidade = quantidade;

@@ -16,7 +16,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
             "WHERE usuario.id = :usuario")
     public void desativar(@Param("usuario") Long idUsuario);
 
-
     @Query("SELECT u FROM Usuario u where u.email = :email")
     Usuario findByEmail(String email);
+
+    @Query("SELECT u FROM Usuario u WHERE u.cpf = :cpf")
+    Usuario findByCpf(String cpf);
 }

@@ -25,7 +25,8 @@ public class UsuarioService {
 
     @Transactional
     public Usuario insert(Usuario usuario){
-        if (this.validarRequest(usuario) == true) {
+        if (this.validarRequest(usuario) == true &&
+            validarCpfEmailExistente(usuario) == true) {
             this.usuarioRepository.save(usuario);
             return usuario;
         }else {
@@ -90,14 +91,19 @@ public class UsuarioService {
     }
 
     //Valida se ja existe o usuario no banco pelo CPF
-//    public Boolean isCpfExist(String cpf) {
-//        Usuario usuario = usuarioRepository.findByCpf(cpf);
-//        if (usuario == null) {
-//            return true;
-//        } else {
-//            throw new RuntimeException("Usuário já existe, verifique o CPF.");
-//        }
-//    }
+    public boolean validarCpfEmailExistente(Usuario usuario) {
+        // Verifica se o CPF já está cadastrado
+        Usuario usuarioPorCpf = usuarioRepository.findByCpf(usuario.getCpf());
+        if (usuarioPorCpf != null) {
+            throw new RuntimeException("CPF ou Email já cadastrados, tente novamente.");
+        }
+        // Verifica se o email já está cadastrado
+        Usuario usuarioPorEmail = usuarioRepository.findByEmail(usuario.getEmail());
+        if (usuarioPorEmail != null) {
+            throw new RuntimeException("CPF ou Email já cadastrados, tente novamente.");
+        }
+        return true;
+    }
 
     //Valida se o CPF tem 11 caracteres
     public Boolean isCpfMenor(Usuario usuario) {
