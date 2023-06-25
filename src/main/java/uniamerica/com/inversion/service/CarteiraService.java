@@ -5,22 +5,28 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Carteira;
+import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.CarteiraRepository;
+import uniamerica.com.inversion.repository.UsuarioRepository;
 
+import javax.persistence.Id;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 
 @Service
 public class CarteiraService {
     @Autowired
     private CarteiraRepository carteiraRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public Carteira findById(Long id){
-        return this.carteiraRepository.findById(id).orElse(new Carteira());
+    public Carteira findById(Long id, Usuario usuario){
+        return this.carteiraRepository.findByIdAndUsuario(id, usuario).orElse(new Carteira());
     }
 
-    public Page<Carteira> listAll(Pageable pageable){
-        return this.carteiraRepository.findAll(pageable);
+    public Page<Carteira> listAll(Pageable pageable, Usuario usuario){
+        return this.carteiraRepository.findByUsuario(usuario, pageable);
     }
 
     @Transactional
@@ -33,25 +39,39 @@ public class CarteiraService {
     }
 
     @Transactional
-    public void update (Long id, Carteira carteira){
-        if (id == carteira.getId() && this.validarRequest(carteira) == true){
-            this.carteiraRepository.save(carteira);
-        }
-        else{
-            throw new RuntimeException("Falha ao Atualizar a Carteira");
+    public void update (Long id, Carteira carteira, Usuario usuario){
+        if (checarDono(carteira, usuario)) {
+            if (id == carteira.getId() && this.validarRequest(carteira) == true){
+                this.carteiraRepository.save(carteira);
+            }
+            else{
+                throw new RuntimeException("Falha ao Atualizar a Carteira");
+            }
+        }else {
+            throw new RuntimeException("Voce nao tem acesso a atualizar esta Carteira");
         }
     }
 
     @Transactional
-    public void desativar(Long id, Carteira carteira){
-        if (id == carteira.getId() && this.validarRequest(carteira) == true){
-            this.carteiraRepository.desativar(carteira.getId());
+    public void desativar(Long id, Carteira carteira, Usuario usuario){
+        if (checarDono(carteira, usuario)) {
+            if (id == carteira.getId() && this.validarRequest(carteira) == true){
+                this.carteiraRepository.desativar(carteira.getId());
+            }else {
+                throw new RuntimeException("Falha ao Desativar a Carteira");
+            }
         }else {
-            throw new RuntimeException("Falha ao Desativar a Carteira");
+            throw new RuntimeException("Voce nao tem acesso a desativar esta Carteira");
         }
     }
 
     //** VALIDAÇÕES CARTEIRA **//
+
+    public Boolean checarDono(Carteira carteira, Usuario usuario) {
+        Optional<Carteira> carteiraAux = this.carteiraRepository.findById(carteira.getId());
+        return carteiraAux.isPresent() && carteiraAux.get().getUsuario().getId().equals(usuario.getId());
+    }
+
 
     //Valida se Nome da carteira nao e vazio ou nulo
     public Boolean isCarteiraNotNull(Carteira carteira) {

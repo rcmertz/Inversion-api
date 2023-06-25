@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import uniamerica.com.inversion.entity.Carteira;
 import uniamerica.com.inversion.entity.Investimento;
+import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.InvestimentoRepository;
+import uniamerica.com.inversion.repository.UsuarioRepository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class InvestimentoService {
@@ -15,10 +19,15 @@ public class InvestimentoService {
     @Autowired
     private InvestimentoRepository investimentoRepository;
 
-    public Investimento findById(Long id) { return this.investimentoRepository.findById(id).orElse(new Investimento());}
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public Page<Investimento> listAll(Pageable pageable){
-        return this.investimentoRepository.findAll(pageable);
+    public Investimento findById(Long id, Usuario usuario){
+        return this.investimentoRepository.findByIdAndUsuario(id, usuario).orElse(new Investimento());
+    }
+
+    public Page<Investimento> listAll(Pageable pageable, Usuario usuario){
+        return this.investimentoRepository.findByUsuario(usuario, pageable);
     }
 
     @Transactional
@@ -33,24 +42,37 @@ public class InvestimentoService {
     }
 
     @Transactional
-    public void update (Long id, Investimento investimento) {
-        if (id == investimento.getId() && this.validarRequest(investimento) == true){
-            this.investimentoRepository.save(investimento);
-        } else {
-            throw new RuntimeException("Falha ao Atualizar o investimento");
+    public void update (Long id, Investimento investimento, Usuario usuario) {
+        if (checarDono(investimento, usuario)) {
+            if (id == investimento.getId() && this.validarRequest(investimento) == true) {
+                this.investimentoRepository.save(investimento);
+            } else {
+                throw new RuntimeException("Falha ao Atualizar o investimento");
+            }
+        }else {
+            throw new RuntimeException("Voce nao tem acesso a atualizar este Investimento");
         }
     }
 
     @Transactional
-    public void desativar (Long id, Investimento investimento) {
-        if (id == investimento.getId() && this.validarRequest(investimento) == true){
-            this.investimentoRepository.save(investimento);
-        } else {
-            throw new RuntimeException("Falha ao Desativar o investimento");
+    public void desativar (Long id, Investimento investimento, Usuario usuario) {
+        if (checarDono(investimento, usuario)) {
+            if (id == investimento.getId() && this.validarRequest(investimento) == true) {
+                this.investimentoRepository.save(investimento);
+            } else {
+                throw new RuntimeException("Falha ao Desativar o investimento");
+            }
+        }else {
+            throw new RuntimeException("Voce nao tem acesso a desativa este Investimento");
         }
     }
 
     //** VALIDAÇÕES INVESTIMENTO **//
+
+    public Boolean checarDono(Investimento investimento, Usuario usuario) {
+        Optional<Investimento> investimentoAux = this.investimentoRepository.findById(investimento.getId());
+        return investimentoAux.isPresent() && investimentoAux.get().getUsuario().getId().equals(usuario.getId());
+    }
 
     public Boolean isValorCaracter(Investimento investimento) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};

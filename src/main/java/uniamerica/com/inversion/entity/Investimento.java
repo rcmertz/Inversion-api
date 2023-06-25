@@ -1,6 +1,7 @@
 package uniamerica.com.inversion.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,12 @@ import java.time.LocalDate;
 @ToString
 @Table(name = "investimento", schema = "public")
 public class Investimento extends AbstractEntity{
+
+    @Getter @Setter
+    @JoinColumn(name = "idUsuario")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Usuario usuario;
 
     @Getter @Setter
     @JoinColumn(name = "idCarteira")

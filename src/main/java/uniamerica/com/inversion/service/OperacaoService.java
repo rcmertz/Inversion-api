@@ -4,11 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import uniamerica.com.inversion.entity.Carteira;
 import uniamerica.com.inversion.entity.Operacao;
+import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.OperacaoRepository;
+import uniamerica.com.inversion.repository.UsuarioRepository;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 public class OperacaoService {
@@ -16,10 +20,15 @@ public class OperacaoService {
     @Autowired
     private OperacaoRepository operacaoRepository;
 
-    public Operacao findById(Long id) { return this.operacaoRepository.findById(id).orElse(new Operacao());}
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public Page<Operacao> listAll(Pageable pageable){
-        return this.operacaoRepository.findAll(pageable);
+    public Operacao findById(Long id, Usuario usuario){
+        return this.operacaoRepository.findByIdAndUsuario(id, usuario).orElse(new Operacao());
+    }
+
+    public Page<Operacao> listAll(Pageable pageable, Usuario usuario){
+        return this.operacaoRepository.findByUsuario(usuario, pageable);
     }
 
     @Transactional
@@ -33,24 +42,37 @@ public class OperacaoService {
     }
 
     @Transactional
-    public void update (Long id, Operacao operacao) {
-        if (id == operacao.getId() && this.validarRequest(operacao) == true){
-            this.operacaoRepository.save(operacao);
-        } else {
-            throw new RuntimeException("Falha ao Atualizar a operacao");
+    public void update (Long id, Operacao operacao, Usuario usuario) {
+        if (checarDono(operacao, usuario)) {
+            if (id == operacao.getId() && this.validarRequest(operacao) == true) {
+                this.operacaoRepository.save(operacao);
+            } else {
+                throw new RuntimeException("Falha ao Atualizar a operacao");
+            }
+        }else {
+            throw new RuntimeException("Voce nao tem acesso a atualizar esta Operacao");
         }
     }
 
     @Transactional
-    public void desativar (Long id, Operacao operacao) {
-        if (id == operacao.getId() && this.validarRequest(operacao) == true){
-            this.operacaoRepository.save(operacao);
-        } else {
-            throw new RuntimeException("Falha ao Desativar a operacao");
+    public void desativar (Long id, Operacao operacao, Usuario usuario) {
+        if (checarDono(operacao, usuario)) {
+            if (id == operacao.getId() && this.validarRequest(operacao) == true) {
+                this.operacaoRepository.save(operacao);
+            } else {
+                throw new RuntimeException("Falha ao Desativar a operacao");
+            }
+        }else {
+            throw new RuntimeException("Voce nao tem acesso a desativar esta Operacao");
         }
     }
 
-    //** Validacao do Operacao **//
+    //** Validacao da Operacao **//
+
+    public Boolean checarDono(Operacao operacao, Usuario usuario) {
+        Optional<Operacao> operacaoAux = this.operacaoRepository.findById(operacao.getId());
+        return operacaoAux.isPresent() && operacaoAux.get().getUsuario().getId().equals(usuario.getId());
+    }
 
     //Valida se a quantidade do operacao nao foi inserido vazio ou nulo
     public Boolean isOperacaoNotNull(Operacao operacao) {

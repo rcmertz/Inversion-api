@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import uniamerica.com.inversion.entity.Carteira;
 import uniamerica.com.inversion.entity.Rendimento;
+import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.RendimentoRepository;
+import uniamerica.com.inversion.repository.UsuarioRepository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class RendimentoService {
@@ -16,12 +20,15 @@ public class RendimentoService {
     @Autowired
     private RendimentoRepository rendimentoRepository;
 
-    public Rendimento findById(Long id) {
-        return this.rendimentoRepository.findById(id).orElse(new Rendimento());
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    public Rendimento findById(Long id, Usuario usuario) {
+        return this.rendimentoRepository.findByIdAndUsuario(id, usuario).orElse(new Rendimento());
     }
 
-    public Page<Rendimento> listAll(Pageable pageable) {
-        return this.rendimentoRepository.findAll(pageable);
+    public Page<Rendimento> listAll(Pageable pageable, Usuario usuario) {
+        return this.rendimentoRepository.findByUsuario(usuario, pageable);
     }
 
     @Transactional
@@ -34,24 +41,37 @@ public class RendimentoService {
     }
 
     @Transactional
-    public void update(Long id, Rendimento rendimento) {
-        if (id == rendimento.getId() && this.validarRequest(rendimento) == true){
-            this.rendimentoRepository.save(rendimento);
-        } else {
-            throw new RuntimeException("Falha ao Atualizar o Rendimento");
+    public void update(Long id, Rendimento rendimento, Usuario usuario) {
+        if (checarDono(rendimento, usuario)) {
+            if (id == rendimento.getId() && this.validarRequest(rendimento) == true) {
+                this.rendimentoRepository.save(rendimento);
+            } else {
+                throw new RuntimeException("Falha ao Atualizar o Rendimento");
+            }
+        }else {
+            throw new RuntimeException("Voce nao tem acesso a atualizar este Rendimento");
         }
     }
 
     @Transactional
-    public void desativar(Long id, Rendimento rendimento) {
-        if (id == rendimento.getId() && this.validarRequest(rendimento) == true){
-            this.rendimentoRepository.desativar(rendimento.getId());
-        } else {
-            throw new RuntimeException("Falha ao Desativar o Rendimento");
+    public void desativar(Long id, Rendimento rendimento, Usuario usuario) {
+        if (checarDono(rendimento, usuario)) {
+            if (id == rendimento.getId() && this.validarRequest(rendimento) == true) {
+                this.rendimentoRepository.desativar(rendimento.getId());
+            } else {
+                throw new RuntimeException("Falha ao Desativar o Rendimento");
+            }
+        }else {
+            throw new RuntimeException("Voce nao tem acesso a desativar este Rendimento");
         }
     }
 
     //** VALIDAÇÕES RENDIMENTO **//
+
+    public Boolean checarDono(Rendimento rendimento, Usuario usuario) {
+        Optional<Rendimento> rendimentoAux = this.rendimentoRepository.findById(rendimento.getId());
+        return rendimentoAux.isPresent() && rendimentoAux.get().getUsuario().getId().equals(usuario.getId());
+    }
 
     //Valida se o valor inserido no rendimento não é nulo
     public Boolean isPrecoNotNull(Rendimento rendimento) {

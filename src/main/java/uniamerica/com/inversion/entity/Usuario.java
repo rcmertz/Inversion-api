@@ -52,6 +52,7 @@ public class Usuario extends AbstractEntity implements UserDetails {
         currentUser.setAtivo(usuario.isAtivo());
         currentUser.setEmail(usuario.getEmail());
         currentUser.setSenha(usuario.getSenha());
+        currentUser.setId(usuario.getId());
 
         return currentUser;
     }

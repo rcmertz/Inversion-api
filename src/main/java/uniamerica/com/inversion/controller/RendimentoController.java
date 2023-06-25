@@ -5,10 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uniamerica.com.inversion.entity.Rendimento;
+import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.service.RendimentoService;
+import uniamerica.com.inversion.service.UsuarioService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,19 +25,29 @@ public class RendimentoController {
     @Autowired
     RendimentoService rendimentoService;
 
+    @Autowired
+    UsuarioService usuarioService;
+
     @GetMapping("{idRendimento}")
     public ResponseEntity<Rendimento> findById(@PathVariable("idRendimento") Long idRendimento) {
-        return ResponseEntity.ok().body(this.rendimentoService.findById(idRendimento));
+        UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) currentAuth.getPrincipal();
+        return ResponseEntity.ok().body(this.rendimentoService.findById(idRendimento, usuario));
     }
 
     @GetMapping
     public ResponseEntity<Page<Rendimento>> listByAllPage(Pageable pageable) {
-        return ResponseEntity.ok().body(this.rendimentoService.listAll(pageable));
+        UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) currentAuth.getPrincipal();
+        return ResponseEntity.ok().body(this.rendimentoService.listAll(pageable, usuario));
     }
 
     @PostMapping
     public ResponseEntity<?> insert(@RequestBody Rendimento rendimento) {
         try {
+            UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            Usuario usuario = this.usuarioService.findById(((Usuario) currentAuth.getPrincipal()).getId());
+            rendimento.setUsuario(usuario);
             this.rendimentoService.insert(rendimento);
             return ResponseEntity.ok().body(rendimento);
         } catch (HibernateException e) {
@@ -50,7 +64,10 @@ public class RendimentoController {
     @PutMapping("/{idRendimento}")
     public ResponseEntity<?> update(@PathVariable Long idRendimento, @RequestBody Rendimento rendimento) {
         try {
-            this.rendimentoService.update(idRendimento, rendimento);
+            UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            Usuario usuario = (Usuario) currentAuth.getPrincipal();
+            rendimento.setUsuario(usuario);
+            this.rendimentoService.update(idRendimento, rendimento, usuario);
             return ResponseEntity.ok().body(rendimento);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<String, Object>();
@@ -64,7 +81,10 @@ public class RendimentoController {
     @PutMapping("/desativar/{idRendimento}")
     public ResponseEntity<?> desativar(@PathVariable Long idRendimento, @RequestBody Rendimento rendimento) {
         try {
-            this.rendimentoService.desativar(idRendimento, rendimento);
+            UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            Usuario usuario = (Usuario) currentAuth.getPrincipal();
+            rendimento.setUsuario(usuario);
+            this.rendimentoService.desativar(idRendimento, rendimento, usuario);
             return ResponseEntity.ok().body(rendimento);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<String, Object>();
