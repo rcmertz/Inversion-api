@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uniamerica.com.inversion.entity.Carteira;
-import uniamerica.com.inversion.entity.Investimento;
-import uniamerica.com.inversion.entity.Operacao;
-import uniamerica.com.inversion.entity.Usuario;
+import uniamerica.com.inversion.entity.*;
 import uniamerica.com.inversion.repository.OperacaoRepository;
 import uniamerica.com.inversion.repository.UsuarioRepository;
 
@@ -32,6 +29,10 @@ public class OperacaoService {
         if (investimento.isPresent()) {
             return this.operacaoRepository.findByUsuarioAndInvestimento(usuario, investimento.get(), pageable);
         }
+        return this.operacaoRepository.findByUsuario(usuario, pageable);
+    }
+
+    public Page<Operacao> listAllOperacao(Pageable pageable, Usuario usuario) {
         return this.operacaoRepository.findByUsuario(usuario, pageable);
     }
 

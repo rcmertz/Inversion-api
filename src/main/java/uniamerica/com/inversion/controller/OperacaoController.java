@@ -8,9 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import uniamerica.com.inversion.entity.Investimento;
-import uniamerica.com.inversion.entity.Operacao;
-import uniamerica.com.inversion.entity.Usuario;
+import uniamerica.com.inversion.entity.*;
 import uniamerica.com.inversion.repository.InvestimentoRepository;
 import uniamerica.com.inversion.service.OperacaoService;
 import uniamerica.com.inversion.service.UsuarioService;
@@ -39,6 +37,14 @@ public class OperacaoController {
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
         return ResponseEntity.ok().body(this.operacaoService.findById(idOperacao, usuario));
     }
+
+    @GetMapping("/listar")
+    public ResponseEntity<Page<Operacao>> listAll(Pageable pageable) {
+        UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) currentAuth.getPrincipal();
+        return ResponseEntity.ok().body(this.operacaoService.listAllOperacao(pageable, usuario));
+    }
+
 
     @GetMapping
     public ResponseEntity<Page<Operacao>> listByAllPage(Pageable pageable , @RequestParam(required = false) Long investimentoId) {
