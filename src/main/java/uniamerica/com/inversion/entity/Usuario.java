@@ -71,6 +71,7 @@ public class Usuario extends AbstractEntity implements UserDetails {
     }
 
     @Override
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String getPassword() {
         return getSenha();
     }

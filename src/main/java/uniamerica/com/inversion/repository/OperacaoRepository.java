@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uniamerica.com.inversion.entity.Carteira;
+import uniamerica.com.inversion.entity.Investimento;
 import uniamerica.com.inversion.entity.Operacao;
 import uniamerica.com.inversion.entity.Usuario;
 
@@ -23,6 +24,8 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
     public void desativar(@Param("operacao") Long idOperacao);
 
     Page<Operacao> findByUsuario(Usuario usuario, Pageable pageable);
+
+    Page<Operacao> findByUsuarioAndInvestimento(Usuario usuario, Investimento investimento, Pageable pageable);
 
     Optional<Operacao> findByIdAndUsuario(Long Id, Usuario usuario);
 

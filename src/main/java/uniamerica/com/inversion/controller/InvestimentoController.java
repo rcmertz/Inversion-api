@@ -49,7 +49,7 @@ public class InvestimentoController {
             UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             Usuario usuario = this.usuarioService.findById(((Usuario) currentAuth.getPrincipal()).getId());
             investimento.setUsuario(usuario);
-            this.investimentoService.insert(investimento);
+            this.investimentoService.insert(investimento, usuario);
             return ResponseEntity.ok().body(investimento);
         } catch (HibernateException e) {
             return ResponseEntity.badRequest().body(e.toString());

@@ -31,9 +31,9 @@ public class InvestimentoService {
     }
 
     @Transactional
-    public Investimento insert(Investimento investimento) {
+    public Investimento insert(Investimento investimento, Usuario usuario) {
         if (this.validarRequest(investimento) == true &&
-            this.isInvestimentoExist(investimento) == true) {
+            this.isInvestimentoExist(investimento, usuario) == true) {
             this.investimentoRepository.save(investimento);
             return investimento;
         } else {
@@ -95,12 +95,12 @@ public class InvestimentoService {
 //        }
 //    }
 
-    public Boolean isInvestimentoExist(Investimento investimento) {
+    public Boolean isInvestimentoExist(Investimento investimento, Usuario usuario) {
         if (investimento.getNomeInvestimento() == null || investimento.getNomeInvestimento().isEmpty()) {
             throw new RuntimeException("O nome do investimento não foi fornecido, favor inserir um nome.");
         } else {
             // Verificar se já existe um investimento com o mesmo nome
-            Investimento investimentoExistente = investimentoRepository.findByNomeInvestimento(investimento.getNomeInvestimento());
+            Investimento investimentoExistente = investimentoRepository.findByNomeInvestimento(investimento.getNomeInvestimento(), usuario.getId());
 
             if (investimentoExistente != null) {
                 // Verificar se o investimento existente está ativo

@@ -22,8 +22,8 @@ public interface InvestimentoRepository extends JpaRepository<Investimento,Long>
             "WHERE investimento.id = :investimento")
     public void desativar(@Param("investimento") Long idInvestimento);
 
-    @Query("SELECT i FROM Investimento i WHERE i.nomeInvestimento = :nomeInvestimento AND i.ativo = true")
-    Investimento findByNomeInvestimento(String nomeInvestimento);
+    @Query("SELECT i FROM Investimento i WHERE i.nomeInvestimento = :nomeInvestimento AND i.ativo = true AND i.usuario.id = :usuario")
+    Investimento findByNomeInvestimento(String nomeInvestimento, Long usuario);
 
     Page<Investimento> findByUsuario(Usuario usuario, Pageable pageable);
 

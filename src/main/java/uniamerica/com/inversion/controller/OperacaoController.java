@@ -8,13 +8,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import uniamerica.com.inversion.entity.Investimento;
 import uniamerica.com.inversion.entity.Operacao;
 import uniamerica.com.inversion.entity.Usuario;
+import uniamerica.com.inversion.repository.InvestimentoRepository;
 import uniamerica.com.inversion.service.OperacaoService;
 import uniamerica.com.inversion.service.UsuarioService;
 
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @CrossOrigin
@@ -26,6 +30,8 @@ public class OperacaoController {
 
     @Autowired
     UsuarioService usuarioService;
+    @Autowired
+    private InvestimentoRepository investimentoRepository;
 
     @GetMapping("/{idOperacao}")
     public ResponseEntity<Operacao> findyById(@PathVariable("idOperacao") Long idOperacao){
@@ -35,10 +41,11 @@ public class OperacaoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Operacao>> listByAllPage(Pageable pageable) {
+    public ResponseEntity<Page<Operacao>> listByAllPage(Pageable pageable , @RequestParam(required = false) Long investimentoId) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
-        return ResponseEntity.ok().body(this.operacaoService.listAll(pageable, usuario));
+        Optional<Investimento> investimento = investimentoRepository.findById(investimentoId);
+        return ResponseEntity.ok().body(this.operacaoService.listAll(pageable, usuario, investimento));
     }
 
     @PostMapping

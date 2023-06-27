@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Carteira;
+import uniamerica.com.inversion.entity.Investimento;
 import uniamerica.com.inversion.entity.Operacao;
 import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.OperacaoRepository;
@@ -27,7 +28,10 @@ public class OperacaoService {
         return this.operacaoRepository.findByIdAndUsuario(id, usuario).orElse(new Operacao());
     }
 
-    public Page<Operacao> listAll(Pageable pageable, Usuario usuario){
+    public Page<Operacao> listAll(Pageable pageable, Usuario usuario, Optional<Investimento> investimento){
+        if (investimento.isPresent()) {
+            return this.operacaoRepository.findByUsuarioAndInvestimento(usuario, investimento.get(), pageable);
+        }
         return this.operacaoRepository.findByUsuario(usuario, pageable);
     }
 
