@@ -12,6 +12,7 @@ import uniamerica.com.inversion.entity.Investimento;
 import uniamerica.com.inversion.entity.Operacao;
 import uniamerica.com.inversion.entity.Usuario;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -22,6 +23,8 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "SET operacao.ativo = false " +
             "WHERE operacao.id = :operacao")
     public void desativar(@Param("operacao") Long idOperacao);
+
+    Page<Operacao> findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(Long carteira, Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
     Page<Operacao> findByUsuario(Usuario usuario, Pageable pageable);
 

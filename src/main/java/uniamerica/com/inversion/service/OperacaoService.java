@@ -10,6 +10,7 @@ import uniamerica.com.inversion.repository.UsuarioRepository;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,10 @@ public class OperacaoService {
             return this.operacaoRepository.findByUsuarioAndInvestimento(usuario, investimento.get(), pageable);
         }
         return this.operacaoRepository.findByUsuario(usuario, pageable);
+    }
+
+    public Page<Operacao> listAllByCarteira(Long carteira, Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable){
+        return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(carteira, usuario, dataStart, dataEnd, pageable);
     }
 
     public Page<Operacao> listAllOperacao(Pageable pageable, Usuario usuario) {

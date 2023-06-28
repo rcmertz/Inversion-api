@@ -3,6 +3,7 @@ package uniamerica.com.inversion.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import uniamerica.com.inversion.service.OperacaoService;
 import uniamerica.com.inversion.service.UsuarioService;
 
 import javax.xml.crypto.Data;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -39,10 +41,10 @@ public class OperacaoController {
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<Page<Operacao>> listAll(Pageable pageable) {
+    public ResponseEntity<Page<Operacao>> listAllByCarteira(Pageable pageable, @RequestParam(required = true) Long carteira, @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataStart, @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataEnd) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
-        return ResponseEntity.ok().body(this.operacaoService.listAllOperacao(pageable, usuario));
+        return ResponseEntity.ok().body(this.operacaoService.listAllByCarteira(carteira, usuario, dataStart, dataEnd, pageable));
     }
 
 
