@@ -33,8 +33,15 @@ public class OperacaoService {
         return this.operacaoRepository.findByUsuario(usuario, pageable);
     }
 
-    public Page<Operacao> listAllByCarteira(Long carteira, Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable){
-        return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(carteira, usuario, dataStart, dataEnd, pageable);
+    public Page<Operacao> listAllByCarteira(Long carteira, Usuario usuario, Optional<LocalDateTime> dataStart, Optional<LocalDateTime> dataEnd, Pageable pageable){
+        if (dataStart.isPresent() && dataEnd.isPresent()){
+            return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(carteira, usuario, dataStart.get(), dataEnd.get(), pageable);
+        }else if (dataStart.isEmpty() && dataEnd.isEmpty()){
+            return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuario(carteira, usuario, pageable);
+        }else {
+            throw new RuntimeException("Data Start e Data End precisa ser preenchido ambos");
+        }
+
     }
 
     public Page<Operacao> listAllOperacao(Pageable pageable, Usuario usuario) {

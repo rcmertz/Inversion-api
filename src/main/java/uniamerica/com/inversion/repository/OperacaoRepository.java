@@ -26,6 +26,8 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
 
     Page<Operacao> findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(Long carteira, Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
+    Page<Operacao> findByInvestimento_CarteiraIdAndUsuario(Long carteira, Usuario usuario, Pageable pageable);
+
     Page<Operacao> findByUsuario(Usuario usuario, Pageable pageable);
 
     Page<Operacao> findByUsuarioAndInvestimento(Usuario usuario, Investimento investimento, Pageable pageable);

@@ -41,7 +41,7 @@ public class OperacaoController {
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<Page<Operacao>> listAllByCarteira(Pageable pageable, @RequestParam(required = true) Long carteira, @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataStart, @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataEnd) {
+    public ResponseEntity<Page<Operacao>> listAllByCarteira(Pageable pageable, @RequestParam(required = true) Long carteira, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> dataStart, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> dataEnd) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
         return ResponseEntity.ok().body(this.operacaoService.listAllByCarteira(carteira, usuario, dataStart, dataEnd, pageable));
