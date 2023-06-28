@@ -33,6 +33,7 @@ public class OperacaoController {
     @Autowired
     private InvestimentoRepository investimentoRepository;
 
+    //** ENDPOINT PARA PEGAR UMA OPERACAO POR ID **//
     @GetMapping("/{idOperacao}")
     public ResponseEntity<Operacao> findyById(@PathVariable("idOperacao") Long idOperacao){
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
@@ -40,6 +41,7 @@ public class OperacaoController {
         return ResponseEntity.ok().body(this.operacaoService.findById(idOperacao, usuario));
     }
 
+    //** ENDPOINT PARA TRAZER TODAS OPERACOES POR CARTEIRA, USADO PARA PAGINAR E PODE SER USADO COM RANGE DE DATA **//
     @GetMapping("/listar")
     public ResponseEntity<Page<Operacao>> listAllByCarteira(Pageable pageable, @RequestParam(required = true) Long carteira, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> dataStart, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> dataEnd) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
@@ -47,13 +49,21 @@ public class OperacaoController {
         return ResponseEntity.ok().body(this.operacaoService.listAllByCarteira(carteira, usuario, dataStart, dataEnd, pageable));
     }
 
-
-    @GetMapping
+    //** ENDPOINT PARA FILTRAR POR UM INVESTIMENTO **//
+    @GetMapping("/find")
     public ResponseEntity<Page<Operacao>> listByAllPage(Pageable pageable , @RequestParam(required = false) Long investimentoId) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
         Optional<Investimento> investimento = investimentoRepository.findById(investimentoId);
         return ResponseEntity.ok().body(this.operacaoService.listAll(pageable, usuario, investimento));
+    }
+
+    //** ENDPOINT PARA TRAZER TODAS OPERACOES **//
+    @GetMapping("/findAll")
+    public ResponseEntity<Page<Operacao>> listAllOperacao(Pageable pageable) {
+        UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) currentAuth.getPrincipal();
+        return ResponseEntity.ok().body(this.operacaoService.listAllOperacao(pageable, usuario));
     }
 
     @PostMapping

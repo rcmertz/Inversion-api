@@ -22,10 +22,12 @@ public class OperacaoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    //** PARA PEGAR UMA OPERACAO POR ID **//
     public Operacao findById(Long id, Usuario usuario){
         return this.operacaoRepository.findByIdAndUsuario(id, usuario).orElse(new Operacao());
     }
 
+    //** PARA FILTRAR POR UM INVESTIMENTO **//
     public Page<Operacao> listAll(Pageable pageable, Usuario usuario, Optional<Investimento> investimento){
         if (investimento.isPresent()) {
             return this.operacaoRepository.findByUsuarioAndInvestimento(usuario, investimento.get(), pageable);
@@ -33,6 +35,12 @@ public class OperacaoService {
         return this.operacaoRepository.findByUsuario(usuario, pageable);
     }
 
+    //** PARA PEGAR TODAS OPERACOES **//
+    public Page<Operacao> listAllOperacao(Pageable pageable, Usuario usuario){
+        return this.operacaoRepository.findByUsuario(usuario, pageable);
+    }
+
+    //** PARA TRAZER TODAS OPERACOES POR CARTEIRA, USADO PARA PAGINAR E PODE SER USADO COM RANGE DE DATA  **//
     public Page<Operacao> listAllByCarteira(Long carteira, Usuario usuario, Optional<LocalDateTime> dataStart, Optional<LocalDateTime> dataEnd, Pageable pageable){
         if (dataStart.isPresent() && dataEnd.isPresent()){
             return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(carteira, usuario, dataStart.get(), dataEnd.get(), pageable);
@@ -42,10 +50,6 @@ public class OperacaoService {
             throw new RuntimeException("Data Start e Data End precisa ser preenchido ambos");
         }
 
-    }
-
-    public Page<Operacao> listAllOperacao(Pageable pageable, Usuario usuario) {
-        return this.operacaoRepository.findByUsuario(usuario, pageable);
     }
 
     @Transactional
