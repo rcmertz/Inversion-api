@@ -24,14 +24,18 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "WHERE operacao.id = :operacao")
     public void desativar(@Param("operacao") Long idOperacao);
 
+    //** PARA TRAZER TODAS OPERACOES POR CARTEIRA, USADO PARA PAGINAR RANGE DE DATA  **//
     Page<Operacao> findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(Long carteira, Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
+    //** PARA TRAZER TODAS OPERACOES POR CARTEIRA, SEM RANGE DE DATA  **//
     Page<Operacao> findByInvestimento_CarteiraIdAndUsuario(Long carteira, Usuario usuario, Pageable pageable);
 
     Page<Operacao> findByUsuario(Usuario usuario, Pageable pageable);
 
-    Page<Operacao> findByUsuarioAndInvestimento(Usuario usuario, Investimento investimento, Pageable pageable);
+    //** FILTRAR POR INVESTIMENTO E DATA  **//
+    Page<Operacao> findByUsuarioAndInvestimentoAndDataBetween(Usuario usuario, Investimento investimento, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
+    Page<Operacao> findByUsuarioAndInvestimento(Usuario usuario, Investimento investimento, Pageable pageable);
     Optional<Operacao> findByIdAndUsuario(Long Id, Usuario usuario);
 
 }

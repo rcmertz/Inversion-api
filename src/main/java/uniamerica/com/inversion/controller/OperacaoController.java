@@ -49,13 +49,13 @@ public class OperacaoController {
         return ResponseEntity.ok().body(this.operacaoService.listAllByCarteira(carteira, usuario, dataStart, dataEnd, pageable));
     }
 
-    //** ENDPOINT PARA FILTRAR POR UM INVESTIMENTO **//
+    //** ENDPOINT PARA FILTRAR POR UM INVESTIMENTO E RANGE DE DATA DA OPERACAO**//
     @GetMapping("/find")
-    public ResponseEntity<Page<Operacao>> listByAllPage(Pageable pageable , @RequestParam(required = false) Long investimentoId) {
+    public ResponseEntity<Page<Operacao>> listByAllPage(Pageable pageable , @RequestParam(required = false) Long investimentoId, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> dataStart, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> dataEnd) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
         Optional<Investimento> investimento = investimentoRepository.findById(investimentoId);
-        return ResponseEntity.ok().body(this.operacaoService.listAll(pageable, usuario, investimento));
+        return ResponseEntity.ok().body(this.operacaoService.listAll(pageable, usuario, investimento, dataStart, dataEnd));
     }
 
     //** ENDPOINT PARA TRAZER TODAS OPERACOES **//

@@ -27,12 +27,15 @@ public class OperacaoService {
         return this.operacaoRepository.findByIdAndUsuario(id, usuario).orElse(new Operacao());
     }
 
-    //** PARA FILTRAR POR UM INVESTIMENTO **//
-    public Page<Operacao> listAll(Pageable pageable, Usuario usuario, Optional<Investimento> investimento){
-        if (investimento.isPresent()) {
+    //** PARA FILTRAR POR UM INVESTIMENTO E POR RANGE DE DATA**//
+    public Page<Operacao> listAll(Pageable pageable, Usuario usuario, Optional<Investimento> investimento, Optional<LocalDateTime> dataStart, Optional<LocalDateTime> dataEnd){
+        if (investimento.isPresent() && dataStart.isPresent() && dataEnd.isPresent()) {
+            return this.operacaoRepository.findByUsuarioAndInvestimentoAndDataBetween(usuario, investimento.get(), dataStart.get(), dataEnd.get(), pageable);
+        }else if (investimento.isPresent()){
             return this.operacaoRepository.findByUsuarioAndInvestimento(usuario, investimento.get(), pageable);
+        }else{
+            return this.operacaoRepository.findByUsuario(usuario, pageable);
         }
-        return this.operacaoRepository.findByUsuario(usuario, pageable);
     }
 
     //** PARA PEGAR TODAS OPERACOES **//
