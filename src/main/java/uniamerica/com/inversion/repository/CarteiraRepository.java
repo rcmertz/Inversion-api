@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uniamerica.com.inversion.entity.Carteira;
+import uniamerica.com.inversion.entity.Investimento;
 import uniamerica.com.inversion.entity.Usuario;
 
 import java.util.Optional;
@@ -20,6 +21,9 @@ public interface CarteiraRepository extends JpaRepository<Carteira, Long> {
             "SET carteira.ativo = false " +
             "WHERE carteira.id = :carteira")
     public void desativar(@Param("carteira") Long idCarteira);
+
+    @Query("SELECT c FROM Carteira c WHERE c.descricaoCarteira = :descricao AND c.ativo = true AND c.usuario.id = :usuario")
+    Carteira findByDescricaoCarteira(String descricao, Long usuario);
 
     Page<Carteira> findByUsuario(Usuario usuario, Pageable pageable);
 

@@ -48,7 +48,7 @@ public class CarteiraController {
             UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             Usuario usuario = this.usuarioService.findById(((Usuario) currentAuth.getPrincipal()).getId());
             carteira.setUsuario(usuario);
-            this.carteiraService.insert(carteira);
+            this.carteiraService.insert(carteira, usuario);
             return ResponseEntity.ok().body(carteira);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<String, Object>();

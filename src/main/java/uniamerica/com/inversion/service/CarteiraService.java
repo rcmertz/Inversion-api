@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Carteira;
+import uniamerica.com.inversion.entity.Investimento;
 import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.CarteiraRepository;
 import uniamerica.com.inversion.repository.UsuarioRepository;
@@ -30,8 +31,9 @@ public class CarteiraService {
     }
 
     @Transactional
-    public void insert(Carteira carteira){
-        if (this.validarRequest(carteira) == true) {
+    public void insert(Carteira carteira, Usuario usuario){
+        if (this.validarRequest(carteira) == true &&
+            this.isCarteiraExist(carteira, usuario) == true) {
             this.carteiraRepository.save(carteira);
         }else {
             throw new RuntimeException("Falha ao cadastrar uma carteira");
@@ -72,15 +74,35 @@ public class CarteiraService {
         return carteiraAux.isPresent() && carteiraAux.get().getUsuario().getId().equals(usuario.getId());
     }
 
-
-    //Valida se Nome da carteira nao e vazio ou nulo
-    public Boolean isCarteiraNotNull(Carteira carteira) {
+    public Boolean isCarteiraExist(Carteira carteira, Usuario usuario) {
         if (carteira.getDescricaoCarteira() == null || carteira.getDescricaoCarteira().isEmpty()) {
-            throw new RuntimeException("A descrição da carteira não foi fornecido, favor inserir uma descriçao.");
+            throw new RuntimeException("O nome da Carteira não foi fornecido, favor inserir um nome.");
         } else {
-            return true;
+            // Verificar se já existe uma carteira com o mesmo nome
+            Carteira carteiraExistente = carteiraRepository.findByDescricaoCarteira(carteira.getDescricaoCarteira(), usuario.getId());
+
+            if (carteiraExistente != null) {
+                // Verificar se a carteira existente está ativa
+                if (carteiraExistente.isAtivo()) {
+                    throw new RuntimeException("Já existe uma carteira ativa com o mesmo nome.");
+                } else {
+                    // Permitir a inserção caso a carteira existente esteja inativo
+                    return true;
+                }
+            } else {
+                return true;
+            }
         }
     }
+
+    //Valida se Nome da carteira nao e vazio ou nulo
+//    public Boolean isCarteiraNotNull(Carteira carteira) {
+//        if (carteira.getDescricaoCarteira() == null || carteira.getDescricaoCarteira().isEmpty()) {
+//            throw new RuntimeException("A descrição da carteira não foi fornecido, favor inserir uma descriçao.");
+//        } else {
+//            return true;
+//        }
+//    }
 
     //Valida se tem caracter especial no nome da carteira
     public Boolean isValorValid(Carteira carteira) {
@@ -97,8 +119,7 @@ public class CarteiraService {
     }
 
     public boolean validarRequest(Carteira carteira){
-        if(this.isCarteiraNotNull(carteira) == true &&
-                this.isValorValid(carteira) == true)
+        if(this.isValorValid(carteira) == true)
         {
             return true;
         }else {
