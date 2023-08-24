@@ -1,6 +1,5 @@
 package uniamerica.com.inversion.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,14 +7,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name = "investimento", schema = "public")
-public class Investimento extends AbstractEntity{
+@Table(name = "meta", schema = "public")
+public class Meta extends AbstractEntity{
 
     @Getter @Setter
     @JoinColumn(name = "idUsuario")
@@ -25,26 +23,31 @@ public class Investimento extends AbstractEntity{
 
     @Getter @Setter
     @JoinColumn(name = "idCarteira")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private Carteira carteira;
 
     @Getter @Setter
-    @Column(name = "nome")
-    private String nomeInvestimento;
+    @Column(name = "descricao")
+    private String descricaoMeta;
 
     @Getter @Setter
-    @Column(name = "valor")
-    private Double valorInvestimento;
+    @Column(name = "realizado")
+    private Double realizadoMeta;
+
+    @Getter @Setter
+    @Column(name = "orcado")
+    private Double orcadoMeta;
 
     @Getter @Setter
     @Column(name = "data")
-    private LocalDate data;
+    private LocalDate dataMeta;
 
-    public Investimento(Usuario usuario, Carteira carteira, String nomeInvestimento, Double valorInvestimento, LocalDate data) {
+    public Meta(Usuario usuario, Carteira carteira, String descricaoMeta, Double realizadoMeta, Double orcadoMeta, LocalDate dataMeta) {
         this.usuario = usuario;
         this.carteira = carteira;
-        this.nomeInvestimento = nomeInvestimento;
-        this.valorInvestimento = valorInvestimento;
-        this.data = data;
+        this.descricaoMeta = descricaoMeta;
+        this.realizadoMeta = realizadoMeta;
+        this.orcadoMeta = orcadoMeta;
+        this.dataMeta = dataMeta;
     }
 }
