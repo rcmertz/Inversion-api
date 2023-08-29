@@ -32,7 +32,7 @@ public class InvestimentoService {
 
     @Transactional
     public Investimento insert(Investimento investimento, Usuario usuario) {
-        if (this.validarRequest(investimento) == true &&
+        if (this.validarRequest(investimento) &&
             this.isInvestimentoExist(investimento, usuario) == true) {
             this.investimentoRepository.save(investimento);
             return investimento;
