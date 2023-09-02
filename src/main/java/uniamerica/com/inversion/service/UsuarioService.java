@@ -25,8 +25,8 @@ public class UsuarioService {
 
     @Transactional
     public Usuario insert(Usuario usuario){
-        if (this.validarRequest(usuario) == true &&
-            validarCpfEmailExistente(usuario) == true) {
+        if (this.validarRequest(usuario) &&
+            validarCpfEmailExistente(usuario)) {
             this.usuarioRepository.save(usuario);
             return usuario;
         }else {
@@ -40,7 +40,7 @@ public class UsuarioService {
 
     @Transactional
     public void update (Long id, Usuario usuario){
-        if (id == usuario.getId() && this.validarRequest(usuario) == true){
+        if (id == usuario.getId() && this.validarRequest(usuario)){
             this.usuarioRepository.save(usuario);
         }
         else{
@@ -50,7 +50,7 @@ public class UsuarioService {
 
     @Transactional
     public void desativar(Long id, Usuario usuario){
-        if (id == usuario.getId() && this.validarRequest(usuario) == true){
+        if (id == usuario.getId() && this.validarRequest(usuario)){
             this.usuarioRepository.desativar(usuario.getId());
         }else {
             throw new RuntimeException("Falha ao Desativar o Usuario");
@@ -184,20 +184,15 @@ public class UsuarioService {
 
     //Funcao para validar o cadastro do Usuario
     public boolean validarRequest(Usuario usuario){
-        if(this.isNomeNotNull(usuario) == true &&
-                this.isNomeCaracter(usuario) == true &&
-                this.isCpfCaracter(usuario) == true &&
-                this.isCpfMenor(usuario) == true &&
-                this.isTelefoneCaracter(usuario) == true &&
-                this.isTelefoneLength(usuario) == true &&
-                this.isTelefoneNotNull(usuario) == true &&
-                this.isTelefoneNumber(usuario) == true &&
-                this.isCpfNotNull(usuario) == true)
-        {
-            return true;
-        }else {
-            return false;
-        }
+        return this.isNomeNotNull(usuario) &&
+                this.isNomeCaracter(usuario) &&
+                this.isCpfCaracter(usuario) &&
+                this.isCpfMenor(usuario) &&
+                this.isTelefoneCaracter(usuario) &&
+                this.isTelefoneLength(usuario) &&
+                this.isTelefoneNotNull(usuario) &&
+                this.isTelefoneNumber(usuario) &&
+                this.isCpfNotNull(usuario);
     }
 
 }

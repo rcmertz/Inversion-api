@@ -33,7 +33,7 @@ public class InvestimentoService {
     @Transactional
     public Investimento insert(Investimento investimento, Usuario usuario) {
         if (this.validarRequest(investimento) &&
-            this.isInvestimentoExist(investimento, usuario) == true) {
+            this.isInvestimentoExist(investimento, usuario)) {
             this.investimentoRepository.save(investimento);
             return investimento;
         } else {
@@ -44,7 +44,7 @@ public class InvestimentoService {
     @Transactional
     public void update (Long id, Investimento investimento, Usuario usuario) {
         if (checarDono(investimento, usuario)) {
-            if (id == investimento.getId() && this.validarRequest(investimento) == true) {
+            if (id == investimento.getId() && this.validarRequest(investimento)) {
                 this.investimentoRepository.save(investimento);
             } else {
                 throw new RuntimeException("Falha ao Atualizar o investimento");
@@ -57,7 +57,7 @@ public class InvestimentoService {
     @Transactional
     public void desativar (Long id, Investimento investimento, Usuario usuario) {
         if (checarDono(investimento, usuario)) {
-            if (id == investimento.getId() && this.validarRequest(investimento) == true) {
+            if (id == investimento.getId() && this.validarRequest(investimento)) {
                 this.investimentoRepository.save(investimento);
             } else {
                 throw new RuntimeException("Falha ao Desativar o investimento");
@@ -117,11 +117,7 @@ public class InvestimentoService {
     }
 
     public Boolean validarRequest(Investimento investimento){
-        if (this.isValorCaracter(investimento) == true) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.isValorCaracter(investimento);
     }
 
 }

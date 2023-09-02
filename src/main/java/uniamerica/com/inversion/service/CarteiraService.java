@@ -32,8 +32,8 @@ public class CarteiraService {
 
     @Transactional
     public void insert(Carteira carteira, Usuario usuario){
-        if (this.validarRequest(carteira) == true &&
-            this.isCarteiraExist(carteira, usuario) == true) {
+        if (this.validarRequest(carteira)  &&
+            this.isCarteiraExist(carteira, usuario) ) {
             this.carteiraRepository.save(carteira);
         }else {
             throw new RuntimeException("Falha ao cadastrar uma carteira");
@@ -43,7 +43,7 @@ public class CarteiraService {
     @Transactional
     public void update (Long id, Carteira carteira, Usuario usuario){
         if (checarDono(carteira, usuario)) {
-            if (id == carteira.getId() && this.validarRequest(carteira) == true){
+            if (id == carteira.getId() && this.validarRequest(carteira) ){
                 this.carteiraRepository.save(carteira);
             }
             else{
@@ -57,7 +57,7 @@ public class CarteiraService {
     @Transactional
     public void desativar(Long id, Carteira carteira, Usuario usuario){
         if (checarDono(carteira, usuario)) {
-            if (id == carteira.getId() && this.validarRequest(carteira) == true){
+            if (id == carteira.getId() && this.validarRequest(carteira) ){
                 this.carteiraRepository.desativar(carteira.getId());
             }else {
                 throw new RuntimeException("Falha ao Desativar a Carteira");
@@ -119,12 +119,7 @@ public class CarteiraService {
     }
 
     public boolean validarRequest(Carteira carteira){
-        if(this.isValorValid(carteira) == true)
-        {
-            return true;
-        }else {
-            return false;
-        }
+        return this.isValorValid(carteira);
     }
 
 }

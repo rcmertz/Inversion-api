@@ -46,10 +46,10 @@ public class MetaService {
             if (id == meta.getId() && this.validarRequest(meta)) {
                 this.metaRepository.save(meta);
             } else {
-                throw new RuntimeException("Falha ao Atualizar o meta");
+                throw new RuntimeException("Falha ao Atualizar a meta");
             }
         }else {
-            throw new RuntimeException("Voce nao tem acesso a atualizar este Meta");
+            throw new RuntimeException("Voce nao tem acesso a atualizar esta Meta");
         }
     }
 
@@ -101,15 +101,15 @@ public class MetaService {
 
     public Boolean isMetaExist(Meta meta, Usuario usuario) {
         if (meta.getDescricaoMeta() == null || meta.getDescricaoMeta().isEmpty()) {
-            throw new RuntimeException("A descrição da meta não foi fornecido, favor inserir um nome.");
+            throw new RuntimeException("O nome da meta não foi fornecido, favor inserir um nome.");
         } else {
             // Verificar se já existe uma meta com a mesma descricao
             Meta metaExistente = metaRepository.findByDescricaoMeta(meta.getDescricaoMeta(), usuario.getId());
 
             if (metaExistente != null) {
-                // Verificar se o meta existente está ativo
+                // Verificar se a meta existente está ativo
                 if (metaExistente.isAtivo()) {
-                    throw new RuntimeException("Já existe uma meta ativa com a mesma descricao.");
+                    throw new RuntimeException("Já existe uma meta ativa com o mesmo nome.");
                 } else {
                     // Permitir a inserção caso a meta existente esteja inativa
                     return true;
@@ -121,12 +121,8 @@ public class MetaService {
     }
 
     public Boolean validarRequest(Meta meta){
-        if (this.isOrcadoCaracter(meta) &&
-            this.isRealizadoCaracter(meta)) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.isOrcadoCaracter(meta) &&
+                this.isRealizadoCaracter(meta);
     }
 
 }

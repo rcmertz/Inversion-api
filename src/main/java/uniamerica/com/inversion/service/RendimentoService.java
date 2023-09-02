@@ -33,7 +33,7 @@ public class RendimentoService {
 
     @Transactional
     public void insert(Rendimento rendimento) {
-        if (this.validarRequest(rendimento) == true) {
+        if (this.validarRequest(rendimento)) {
             this.rendimentoRepository.save(rendimento);
         } else {
             throw new RuntimeException("Falha ao Cadastrar o Rendimento");
@@ -43,7 +43,7 @@ public class RendimentoService {
     @Transactional
     public void update(Long id, Rendimento rendimento, Usuario usuario) {
         if (checarDono(rendimento, usuario)) {
-            if (id == rendimento.getId() && this.validarRequest(rendimento) == true) {
+            if (id == rendimento.getId() && this.validarRequest(rendimento)) {
                 this.rendimentoRepository.save(rendimento);
             } else {
                 throw new RuntimeException("Falha ao Atualizar o Rendimento");
@@ -56,7 +56,7 @@ public class RendimentoService {
     @Transactional
     public void desativar(Long id, Rendimento rendimento, Usuario usuario) {
         if (checarDono(rendimento, usuario)) {
-            if (id == rendimento.getId() && this.validarRequest(rendimento) == true) {
+            if (id == rendimento.getId() && this.validarRequest(rendimento)) {
                 this.rendimentoRepository.desativar(rendimento.getId());
             } else {
                 throw new RuntimeException("Falha ao Desativar o Rendimento");
@@ -124,14 +124,10 @@ public class RendimentoService {
     }
 
     public boolean validarRequest(Rendimento rendimento) {
-        if (this.isPrecoNotNull(rendimento) == true &&
-                this.isQuantidadeNotNull(rendimento) == true &&
-                this.isPrecoCaracter(rendimento) == true &&
-                this.isQuantidadeCaracter(rendimento) == true) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.isPrecoNotNull(rendimento) &&
+                this.isQuantidadeNotNull(rendimento) &&
+                this.isPrecoCaracter(rendimento) &&
+                this.isQuantidadeCaracter(rendimento);
     }
 
 }

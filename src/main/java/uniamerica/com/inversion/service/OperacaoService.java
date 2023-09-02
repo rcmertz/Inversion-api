@@ -57,7 +57,7 @@ public class OperacaoService {
 
     @Transactional
     public Operacao insert(Operacao operacao) {
-        if (this.validarRequest(operacao) == true) {
+        if (this.validarRequest(operacao)) {
             this.operacaoRepository.save(operacao);
             return operacao;
         } else {
@@ -68,7 +68,7 @@ public class OperacaoService {
     @Transactional
     public void update (Long id, Operacao operacao, Usuario usuario) {
         if (checarDono(operacao, usuario)) {
-            if (id == operacao.getId() && this.validarRequest(operacao) == true) {
+            if (id == operacao.getId() && this.validarRequest(operacao)) {
                 this.operacaoRepository.save(operacao);
             } else {
                 throw new RuntimeException("Falha ao Atualizar a operacao");
@@ -81,7 +81,7 @@ public class OperacaoService {
     @Transactional
     public void desativar (Long id, Operacao operacao, Usuario usuario) {
         if (checarDono(operacao, usuario)) {
-            if (id == operacao.getId() && this.validarRequest(operacao) == true) {
+            if (id == operacao.getId() && this.validarRequest(operacao)) {
                 this.operacaoRepository.save(operacao);
             } else {
                 throw new RuntimeException("Falha ao Desativar a operacao");
@@ -131,14 +131,9 @@ public class OperacaoService {
     }
 
     public Boolean validarRequest(Operacao operacao){
-        if (this.isOperacaoNotNull(operacao) == true &&
-                this.isValorNegativo(operacao) == true &&
-                this.isValorCaracter(operacao) == true)
-        {
-            return true;
-        } else {
-            return false;
-        }
+        return this.isOperacaoNotNull(operacao) &&
+                this.isValorNegativo(operacao) &&
+                this.isValorCaracter(operacao);
     }
 
 }
