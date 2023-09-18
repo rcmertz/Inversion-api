@@ -35,7 +35,7 @@ public class Meta extends AbstractEntity{
     private Double realizadoMeta;
 
     @Getter @Setter
-    @Column(name = "orcado")
+    @Column(name = "meta")
     private Double orcadoMeta;
 
     @Getter @Setter
