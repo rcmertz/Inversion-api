@@ -136,4 +136,8 @@ public class OperacaoService {
                 this.isValorCaracter(operacao);
     }
 
+    public Page<Operacao> findValorByTipoCompraAndUsuarioPaginado(Usuario usuario, Pageable pageable){
+        return operacaoRepository.findValorByTipoCompraAndUsuario(usuario, pageable);
+    };
+
 }

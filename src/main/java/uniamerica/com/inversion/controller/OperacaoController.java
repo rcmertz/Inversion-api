@@ -15,6 +15,7 @@ import uniamerica.com.inversion.service.OperacaoService;
 import uniamerica.com.inversion.service.UsuarioService;
 
 import javax.xml.crypto.Data;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +64,18 @@ public class OperacaoController {
     public ResponseEntity<Page<Operacao>> listAllOperacao(Pageable pageable) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
-        return ResponseEntity.ok().body(this.operacaoService.listAllOperacao(pageable, usuario));
+        return ResponseEntity.ok().body(
+                this.operacaoService.listAllOperacao(pageable, usuario)
+        );
+    }
+
+    @GetMapping("/findAllValorOperacao")
+    public ResponseEntity<Page<Operacao>> listAllValorOperacao(Pageable pageable) {
+        UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) currentAuth.getPrincipal();
+        return ResponseEntity.ok().body(
+                this.operacaoService.findValorByTipoCompraAndUsuarioPaginado(usuario,pageable)
+        );
     }
 
     @PostMapping
