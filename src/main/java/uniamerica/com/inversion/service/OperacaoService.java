@@ -136,8 +136,17 @@ public class OperacaoService {
                 this.isValorCaracter(operacao);
     }
 
-    public Page<Operacao> findValorByTipoCompraAndUsuarioPaginado(Usuario usuario, Pageable pageable){
-        return operacaoRepository.findValorByTipoCompraAndUsuario(usuario, pageable);
+    public BigDecimal findValorByTipoCompraAndUsuarioPaginado(Usuario usuario, Long idInvestimento){
+        var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
+
+        BigDecimal valorTotal = BigDecimal.ZERO;
+        Integer quantidadeTotal = 0;
+
+        for(Operacao operacao: listValor) {
+            valorTotal = valorTotal.add(operacao.getValor());
+            quantidadeTotal += operacao.getQuantidade();
+        }
+        return valorTotal.divide(new BigDecimal(quantidadeTotal));
     };
 
 }

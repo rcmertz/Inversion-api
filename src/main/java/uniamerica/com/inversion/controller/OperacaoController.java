@@ -69,12 +69,12 @@ public class OperacaoController {
         );
     }
 
-    @GetMapping("/findAllValorOperacao")
-    public ResponseEntity<Page<Operacao>> listAllValorOperacao(Pageable pageable) {
+    @GetMapping("/findAllValorOperacao/{idInvestimento}")
+    public ResponseEntity<BigDecimal> getPrecoMedioInvestimento(@PathVariable("idInvestimento")  Long idInvestimento) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
         return ResponseEntity.ok().body(
-                this.operacaoService.findValorByTipoCompraAndUsuarioPaginado(usuario,pageable)
+                this.operacaoService.findValorByTipoCompraAndUsuarioPaginado(usuario, idInvestimento)
         );
     }
 

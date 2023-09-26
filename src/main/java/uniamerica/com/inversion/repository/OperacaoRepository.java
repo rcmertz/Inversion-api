@@ -14,6 +14,7 @@ import uniamerica.com.inversion.entity.Usuario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -39,7 +40,7 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
     Page<Operacao> findByUsuarioAndInvestimento(Usuario usuario, Investimento investimento, Pageable pageable);
     Optional<Operacao> findByIdAndUsuario(Long Id, Usuario usuario);
 
-    @Query("SELECT o.valor FROM Operacao o WHERE o.tipo = 'compra' AND o.ativo = true AND o.usuario = :usuario")
-    Page<Operacao> findValorByTipoCompraAndUsuario(Usuario usuario, Pageable pageable);
+    @Query("SELECT o FROM Operacao o WHERE o.investimento.id = :idInvestimento AND o.tipo = 'compra' AND o.ativo = true AND o.usuario = :usuario")
+    List<Operacao> findValorByTipoCompraAndUsuario(Usuario usuario, Long idInvestimento);
 
 }
