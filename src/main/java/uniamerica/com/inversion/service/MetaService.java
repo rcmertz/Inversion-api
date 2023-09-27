@@ -73,13 +73,13 @@ public class MetaService {
         return metaAux.isPresent() && metaAux.get().getUsuario().getId().equals(usuario.getId());
     }
 
-    public Boolean isOrcadoCaracter(Meta meta) {
+    public Boolean isValorCaracter(Meta meta) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
-        for (int i = 0; i < meta.getOrcadoMeta().toString().length(); i++) {
-            char chr = meta.getOrcadoMeta().toString().charAt(i);
+        for (int i = 0; i < meta.getValorMeta().toString().length(); i++) {
+            char chr = meta.getValorMeta().toString().charAt(i);
             for (int j = 0; j < charSearch.length; j++) {
                 if (charSearch[j] == chr) {
-                    throw new RuntimeException("O valor orcado inserido não é válido, favor insira um valor sem caracter especial.");
+                    throw new RuntimeException("O valor da meta inserido não é válido, favor insira um valor sem caracter especial.");
                 }
             }
         }
@@ -121,7 +121,7 @@ public class MetaService {
     }
 
     public Boolean validarRequest(Meta meta){
-        return this.isOrcadoCaracter(meta) &&
+        return this.isValorCaracter(meta) &&
                 this.isRealizadoCaracter(meta);
     }
 
