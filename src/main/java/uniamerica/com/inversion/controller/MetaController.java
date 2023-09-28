@@ -42,6 +42,31 @@ public class MetaController {
         return ResponseEntity.ok().body(this.metaService.listAll(pageable, usuario));
     }
 
+    @GetMapping("/{metaId}/calcular-aporte")
+    public ResponseEntity<?> calcularAporte(@PathVariable Long metaId) {
+        try {
+            UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            Usuario usuario = (Usuario) currentAuth.getPrincipal();
+
+            // Recupera a meta do banco de dados com base no ID fornecido e no usuário autenticado
+            Meta meta = this.metaService.findById(metaId, usuario);
+
+            if (meta == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Map<String, Double> resultado = this.metaService.calcularAporteNecessario(meta);
+
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<String, Object>();
+            response.put("status", "500");
+            response.put("status", "error");
+            response.put("erro", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> insert(@RequestBody Meta meta) {
         try {

@@ -42,12 +42,20 @@ public class Meta extends AbstractEntity{
     @Column(name = "data")
     private LocalDate dataMeta;
 
-    public Meta(Usuario usuario, Carteira carteira, String descricaoMeta, Double realizadoMeta, Double valorMeta, LocalDate dataMeta) {
+    @Getter @Setter
+    @Column(name = "aporte")
+    private Double valorAporte;
+
+    @Getter @Setter
+    @Column(name = "rentabilidade")
+    private Double rentabilidade;
+
+    public Meta(Usuario usuario, Carteira carteira, String descricaoMeta, Double valorMeta, LocalDate dataMeta, Double rentabilidade) {
         this.usuario = usuario;
         this.carteira = carteira;
         this.descricaoMeta = descricaoMeta;
-        this.realizadoMeta = realizadoMeta;
         this.valorMeta = valorMeta;
         this.dataMeta = dataMeta;
+        this.rentabilidade = rentabilidade;
     }
 }
