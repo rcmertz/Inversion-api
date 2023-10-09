@@ -10,7 +10,11 @@ import uniamerica.com.inversion.repository.UsuarioRepository;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -58,13 +62,38 @@ public class OperacaoService {
     @Transactional
     public Operacao insert(Operacao operacao) {
         if (this.validarRequest(operacao)) {
-            this.operacaoRepository.save(operacao);
+//            // Calcula o novo saldo
+//            BigDecimal saldoAtual = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
+//
+//            BigDecimal valorTotal;
+//            var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
+//
+//            BigDecimal valorTotal = BigDecimal.ZERO;
+//            Integer quantidadeTotal = 0;
+//
+//            for(Operacao operacao: listValor) {
+//                valorTotal = valorTotal.add(operacao.getValor());
+//                quantidadeTotal += operacao.getQuantidade();
+//            }
+//            return valorTotal.divide(new BigDecimal(quantidadeTotal));
+//            // Calcula o novo preço médio se o saldo for maior que zero
+//            BigDecimal novoPrecoMedio = BigDecimal.ZERO;
+//            if (novoSaldo.compareTo(BigDecimal.ZERO) > 0) {
+//                BigDecimal valorTotal = operacao.getValor().multiply(BigDecimal.valueOf(operacao.getQuantidade()));
+//                novoPrecoMedio = valorTotal.divide(novoSaldo, 2, RoundingMode.HALF_UP);
+//            }
+
+            // Define o novo saldo e preço médio na operação
+//            operacao.setPrecoMedio(novoPrecoMedio);
+
+            // Salva a operação com o novo preço médio e saldo
+            operacao = operacaoRepository.save(operacao);
+
             return operacao;
         } else {
-            throw new RuntimeException("Falha ao cadastrar a operacao");
+            throw new RuntimeException("Falha ao cadastrar a operação");
         }
     }
-
     @Transactional
     public void update (Long id, Operacao operacao, Usuario usuario) {
         if (checarDono(operacao, usuario)) {
@@ -90,6 +119,58 @@ public class OperacaoService {
             throw new RuntimeException("Voce nao tem acesso a desativar esta Operacao");
         }
     }
+
+    public BigDecimal findValorByTipoCompraAndUsuario(Usuario usuario, Long idInvestimento) {
+        BigDecimal saldo = operacaoRepository.saldo(idInvestimento, usuario);
+
+        // Se o saldo for zero ou negativo, o preço médio também deve ser zero
+        if (saldo.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+
+        var listValorTotal = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
+        BigDecimal valorTotal = BigDecimal.ZERO;
+
+        for (Operacao operacao : listValorTotal) {
+            valorTotal = valorTotal.add(operacao.getValor());
+        }
+
+        return valorTotal.divide(saldo, 2, RoundingMode.HALF_UP);
+    }
+
+
+//    private BigDecimal calcularPrecoMedio(Operacao operacao) {
+//        // Recupere todas as operações de compra associadas ao mesmo investimento e usuário
+//        List<Operacao> operacoesCompra = operacaoRepository.findOperacoesCompraByInvestimentoEUsuario(operacao.getUsuario(), operacao.getInvestimento());
+//
+//        // Recupere todas as operações de venda associadas ao mesmo investimento e usuário
+//        List<Operacao> operacoesVenda = operacaoRepository.findOperacoesVendaByInvestimentoEUsuario(operacao.getUsuario(), operacao.getInvestimento());
+//
+//        BigDecimal valorTotal = BigDecimal.ZERO;
+//        int quantidadeTotal = 0;
+//
+//        for (Operacao operacao : operacoesDeCompra) {
+//            BigDecimal valorOperacao = operacao.getValor();
+//            int quantidadeOperacao = operacao.getQuantidade();
+//
+//            valorTotal = valorTotal.add(valorOperacao.multiply(BigDecimal.valueOf(quantidadeOperacao)));
+//            quantidadeTotal += quantidadeOperacao;
+//        }
+//
+//        Map<String, Object> resultado = new HashMap<>();
+//
+//        resultado.put("quantidadeTotal", quantidadeTotal);
+//
+//        if (quantidadeTotal > 0) {
+//            BigDecimal precoMedio = valorTotal.divide(BigDecimal.valueOf(quantidadeTotal), 2, BigDecimal.ROUND_HALF_UP);
+//            resultado.put("precoMedio", precoMedio);
+//        } else {
+//            // Se a quantidade total for zero, retorne zero como o preço médio.
+//            resultado.put("precoMedio", BigDecimal.ZERO);
+//        }
+//
+//        return calcularPrecoMedio;
+//    }
 
     //** Validacao da Operacao **//
 
@@ -136,17 +217,61 @@ public class OperacaoService {
                 this.isValorCaracter(operacao);
     }
 
-    public BigDecimal findValorByTipoCompraAndUsuarioPaginado(Usuario usuario, Long idInvestimento){
-        var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
+//    public List<Operacao> findComprasAtivasByInvestimentoAndUsuario(Long idInvestimento, Usuario usuario) {
+//        return operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
+//    }
+//    public class CalculoPrecoMedio {
+//        public static void main(String[] args) {
+//            List<Operacao> comprasAtivas = /* Obtenha sua lista de compras aqui */;
+//
+//            int totalQuantidade = 0;
+//            BigDecimal totalValor = BigDecimal.ZERO;
+//
+//            for (Operacao compra : comprasAtivas) {
+//                int quantidade = compra.getQuantidade();
+//                BigDecimal valorUnitario = compra.getValor();
+//
+//                totalQuantidade += quantidade;
+//                totalValor = totalValor.add(valorUnitario.multiply(BigDecimal.valueOf(quantidade)));
+//            }
+//
+//            if (totalQuantidade > 0) {
+//                BigDecimal precoMedio = totalValor.divide(BigDecimal.valueOf(totalQuantidade), 2, BigDecimal.ROUND_HALF_UP);
+//                System.out.println("Preço Médio de Compra: " + precoMedio);
+//            } else {
+//                System.out.println("Não foi possível calcular o preço médio, pois a quantidade total é zero.");
+//            }
+//        }
+//    }
 
-        BigDecimal valorTotal = BigDecimal.ZERO;
-        Integer quantidadeTotal = 0;
 
-        for(Operacao operacao: listValor) {
-            valorTotal = valorTotal.add(operacao.getValor());
-            quantidadeTotal += operacao.getQuantidade();
-        }
-        return valorTotal.divide(new BigDecimal(quantidadeTotal));
-    };
+//    public Map<String, Object> calcularPrecoMedioDeCompra(Usuario usuario, Long idInvestimento) {
+//        List<Operacao> operacoesDeCompra = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
+//
+//        BigDecimal valorTotal = BigDecimal.ZERO;
+//        int quantidadeTotal = 0;
+//
+//        for (Operacao operacao : operacoesDeCompra) {
+//            BigDecimal valorOperacao = operacao.getValor();
+//            int quantidadeOperacao = operacao.getQuantidade();
+//
+//            valorTotal = valorTotal.add(valorOperacao.multiply(BigDecimal.valueOf(quantidadeOperacao)));
+//            quantidadeTotal += quantidadeOperacao;
+//        }
+//
+//        Map<String, Object> resultado = new HashMap<>();
+//
+//        resultado.put("quantidadeTotal", quantidadeTotal);
+//
+//        if (quantidadeTotal > 0) {
+//            BigDecimal precoMedio = valorTotal.divide(BigDecimal.valueOf(quantidadeTotal), 2, BigDecimal.ROUND_HALF_UP);
+//            resultado.put("precoMedio", precoMedio);
+//        } else {
+//            // Se a quantidade total for zero, retorne zero como o preço médio.
+//            resultado.put("precoMedio", BigDecimal.ZERO);
+//        }
+//
+//        return resultado;
+//    }
 
 }

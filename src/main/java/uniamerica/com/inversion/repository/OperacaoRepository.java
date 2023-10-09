@@ -7,11 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import uniamerica.com.inversion.entity.Carteira;
-import uniamerica.com.inversion.entity.Investimento;
-import uniamerica.com.inversion.entity.Operacao;
-import uniamerica.com.inversion.entity.Usuario;
+import uniamerica.com.inversion.entity.*;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,7 +38,15 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
     Page<Operacao> findByUsuarioAndInvestimento(Usuario usuario, Investimento investimento, Pageable pageable);
     Optional<Operacao> findByIdAndUsuario(Long Id, Usuario usuario);
 
-    @Query("SELECT o FROM Operacao o WHERE o.investimento.id = :idInvestimento AND o.tipo = 'compra' AND o.ativo = true AND o.usuario = :usuario")
+    @Query("SELECT o FROM Operacao o WHERE o.investimento.id = :idInvestimento AND o.ativo = true AND o.usuario = :usuario")
     List<Operacao> findValorByTipoCompraAndUsuario(Usuario usuario, Long idInvestimento);
 
+    @Query("SELECT COALESCE(SUM(CASE WHEN o.tipo = 'compra' THEN o.quantidade ELSE -o.quantidade END), 0) AS saldo " +
+            "FROM Operacao o " +
+            "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
+    BigDecimal saldo(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
+//    @Transactional
+//    @Modifying
+//    @Query("UPDATE Operacao o SET o.precoMedio = :precoMedio WHERE o.id = :operacaoId")
+//    void updatePrecoMedioById(Long operacaoId, BigDecimal precoMedio);
 }

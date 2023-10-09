@@ -14,6 +14,7 @@ import uniamerica.com.inversion.repository.InvestimentoRepository;
 import uniamerica.com.inversion.service.OperacaoService;
 import uniamerica.com.inversion.service.UsuarioService;
 
+import javax.transaction.Transactional;
 import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -56,6 +57,7 @@ public class OperacaoController {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
         Optional<Investimento> investimento = investimentoRepository.findById(investimentoId);
+
         return ResponseEntity.ok().body(this.operacaoService.listAll(pageable, usuario, investimento, dataStart, dataEnd));
     }
 
@@ -69,14 +71,35 @@ public class OperacaoController {
         );
     }
 
-    @GetMapping("/findAllValorOperacao/{idInvestimento}")
-    public ResponseEntity<BigDecimal> getPrecoMedioInvestimento(@PathVariable("idInvestimento")  Long idInvestimento) {
-        UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuario = (Usuario) currentAuth.getPrincipal();
-        return ResponseEntity.ok().body(
-                this.operacaoService.findValorByTipoCompraAndUsuarioPaginado(usuario, idInvestimento)
-        );
-    }
+//    @GetMapping("/precoMedio/{idInvestimento}")
+//    @Transactional
+//    public Map<String, Object> calcularPrecoMedio(Usuario usuario, Investimento investimento) {
+//        try {
+//            // Recupere o usuário autenticado a partir do contexto de segurança
+//            UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+//            Usuario usuario = (Usuario) currentAuth.getPrincipal();
+//
+//            // Encontre o investimento pelo ID
+//            Investimento investimento = new Investimento();
+//            investimento.setId(idInvestimento);
+//
+//            // Calcule o preço médio com base no usuário e no investimento
+//            Map<String, Object> resultado = operacaoService.calcularPrecoMedio(usuario, investimento);
+//
+//            // Verifique se o preço médio é maior que zero antes de retornar a resposta
+//            if (resultado.containsKey("precoMedio") && ((BigDecimal) resultado.get("precoMedio")).compareTo(BigDecimal.ZERO) >= 0) {
+//                return ResponseEntity.ok(resultado);
+//            } else {
+//                return ResponseEntity.notFound().build();
+//            }
+//        } catch (Exception e) {
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("status", "500");
+//            response.put("status", "error");
+//            response.put("erro", e.getMessage());
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
 
     @PostMapping
     public ResponseEntity<?> insert(@RequestBody Operacao operacao) {
