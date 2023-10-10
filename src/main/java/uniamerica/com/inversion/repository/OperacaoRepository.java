@@ -45,8 +45,5 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "FROM Operacao o " +
             "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
     BigDecimal saldo(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE Operacao o SET o.precoMedio = :precoMedio WHERE o.id = :operacaoId")
-//    void updatePrecoMedioById(Long operacaoId, BigDecimal precoMedio);
+
 }

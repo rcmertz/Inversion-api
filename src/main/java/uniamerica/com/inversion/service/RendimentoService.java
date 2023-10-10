@@ -66,6 +66,8 @@ public class RendimentoService {
         }
     }
 
+
+
     //** VALIDAÇÕES RENDIMENTO **//
 
     public Boolean checarDono(Rendimento rendimento, Usuario usuario) {

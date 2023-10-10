@@ -62,33 +62,8 @@ public class OperacaoService {
     @Transactional
     public Operacao insert(Operacao operacao) {
         if (this.validarRequest(operacao)) {
-//            // Calcula o novo saldo
-//            BigDecimal saldoAtual = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
-//
-//            BigDecimal valorTotal;
-//            var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
-//
-//            BigDecimal valorTotal = BigDecimal.ZERO;
-//            Integer quantidadeTotal = 0;
-//
-//            for(Operacao operacao: listValor) {
-//                valorTotal = valorTotal.add(operacao.getValor());
-//                quantidadeTotal += operacao.getQuantidade();
-//            }
-//            return valorTotal.divide(new BigDecimal(quantidadeTotal));
-//            // Calcula o novo preço médio se o saldo for maior que zero
-//            BigDecimal novoPrecoMedio = BigDecimal.ZERO;
-//            if (novoSaldo.compareTo(BigDecimal.ZERO) > 0) {
-//                BigDecimal valorTotal = operacao.getValor().multiply(BigDecimal.valueOf(operacao.getQuantidade()));
-//                novoPrecoMedio = valorTotal.divide(novoSaldo, 2, RoundingMode.HALF_UP);
-//            }
-
-            // Define o novo saldo e preço médio na operação
-//            operacao.setPrecoMedio(novoPrecoMedio);
-
-            // Salva a operação com o novo preço médio e saldo
-            operacao = operacaoRepository.save(operacao);
-
+            this.calculoPrecoMedio(operacao);
+            this.operacaoRepository.save(operacao);
             return operacao;
         } else {
             throw new RuntimeException("Falha ao cadastrar a operação");
@@ -120,23 +95,44 @@ public class OperacaoService {
         }
     }
 
-    public BigDecimal findValorByTipoCompraAndUsuario(Usuario usuario, Long idInvestimento) {
-        BigDecimal saldo = operacaoRepository.saldo(idInvestimento, usuario);
+//    public BigDecimal findValorByTipoCompraAndUsuario(Usuario usuario, Long idInvestimento) {
+//        BigDecimal saldo = operacaoRepository.saldo(idInvestimento, usuario);
+//
+//        // Se o saldo for zero ou negativo, o preço médio também deve ser zero
+//        if (saldo.compareTo(BigDecimal.ZERO) <= 0) {
+//            return BigDecimal.ZERO;
+//        }
+//
+//        var listValorTotal = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
+//        BigDecimal valorTotal = BigDecimal.ZERO;
+//
+//        for (Operacao operacao : listValorTotal) {
+//            valorTotal = valorTotal.add(operacao.getValor());
+//        }
+//
+//        return valorTotal.divide(saldo, 2, RoundingMode.HALF_UP);
+//    }
 
-        // Se o saldo for zero ou negativo, o preço médio também deve ser zero
-        if (saldo.compareTo(BigDecimal.ZERO) <= 0) {
-            return BigDecimal.ZERO;
-        }
+private void calculoPrecoMedio(Operacao operacao) {
 
-        var listValorTotal = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
-        BigDecimal valorTotal = BigDecimal.ZERO;
+    BigDecimal saldoAtual = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
 
-        for (Operacao operacao : listValorTotal) {
-            valorTotal = valorTotal.add(operacao.getValor());
-        }
+    var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(operacao.getUsuario(), operacao.getInvestimento().getId());
 
-        return valorTotal.divide(saldo, 2, RoundingMode.HALF_UP);
+    BigDecimal valorTotal = BigDecimal.ZERO;
+
+    for(Operacao oper: listValor) {
+        valorTotal = valorTotal.add(oper.getValor());
     }
+    if (saldoAtual.compareTo(BigDecimal.ZERO) != 0) {
+        BigDecimal resultado = valorTotal.divide(saldoAtual, 2, RoundingMode.HALF_UP);
+        System.out.println("Resultado da divisão: " + resultado);
+        operacao.setPrecoMedio(resultado);
+    } else {
+        System.out.println("O saldo atual é zero. Não é possível realizar a divisão.");
+    }
+}
+
 
 
 //    private BigDecimal calcularPrecoMedio(Operacao operacao) {
@@ -242,36 +238,6 @@ public class OperacaoService {
 //                System.out.println("Não foi possível calcular o preço médio, pois a quantidade total é zero.");
 //            }
 //        }
-//    }
-
-
-//    public Map<String, Object> calcularPrecoMedioDeCompra(Usuario usuario, Long idInvestimento) {
-//        List<Operacao> operacoesDeCompra = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
-//
-//        BigDecimal valorTotal = BigDecimal.ZERO;
-//        int quantidadeTotal = 0;
-//
-//        for (Operacao operacao : operacoesDeCompra) {
-//            BigDecimal valorOperacao = operacao.getValor();
-//            int quantidadeOperacao = operacao.getQuantidade();
-//
-//            valorTotal = valorTotal.add(valorOperacao.multiply(BigDecimal.valueOf(quantidadeOperacao)));
-//            quantidadeTotal += quantidadeOperacao;
-//        }
-//
-//        Map<String, Object> resultado = new HashMap<>();
-//
-//        resultado.put("quantidadeTotal", quantidadeTotal);
-//
-//        if (quantidadeTotal > 0) {
-//            BigDecimal precoMedio = valorTotal.divide(BigDecimal.valueOf(quantidadeTotal), 2, BigDecimal.ROUND_HALF_UP);
-//            resultado.put("precoMedio", precoMedio);
-//        } else {
-//            // Se a quantidade total for zero, retorne zero como o preço médio.
-//            resultado.put("precoMedio", BigDecimal.ZERO);
-//        }
-//
-//        return resultado;
 //    }
 
 }
