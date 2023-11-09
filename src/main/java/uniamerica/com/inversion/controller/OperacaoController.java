@@ -71,35 +71,14 @@ public class OperacaoController {
         );
     }
 
-//    @GetMapping("/precoMedio/{idInvestimento}")
-//    @Transactional
-//    public Map<String, Object> calcularPrecoMedio(Usuario usuario, Investimento investimento) {
-//        try {
-//            // Recupere o usuário autenticado a partir do contexto de segurança
-//            UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-//            Usuario usuario = (Usuario) currentAuth.getPrincipal();
-//
-//            // Encontre o investimento pelo ID
-//            Investimento investimento = new Investimento();
-//            investimento.setId(idInvestimento);
-//
-//            // Calcule o preço médio com base no usuário e no investimento
-//            Map<String, Object> resultado = operacaoService.calcularPrecoMedio(usuario, investimento);
-//
-//            // Verifique se o preço médio é maior que zero antes de retornar a resposta
-//            if (resultado.containsKey("precoMedio") && ((BigDecimal) resultado.get("precoMedio")).compareTo(BigDecimal.ZERO) >= 0) {
-//                return ResponseEntity.ok(resultado);
-//            } else {
-//                return ResponseEntity.notFound().build();
-//            }
-//        } catch (Exception e) {
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("status", "500");
-//            response.put("status", "error");
-//            response.put("erro", e.getMessage());
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//    }
+    @GetMapping("/findAllValorOperacao/{idInvestimento}")
+    public ResponseEntity<BigDecimal> getPrecoMedioInvestimento(@PathVariable("idInvestimento")  Long idInvestimento) {
+        UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) currentAuth.getPrincipal();
+        return ResponseEntity.ok().body(
+                this.operacaoService.findValorByTipoCompraAndUsuarioPaginado(usuario, idInvestimento)
+        );
+    }
 
     @PostMapping
     public ResponseEntity<?> insert(@RequestBody Operacao operacao) {
