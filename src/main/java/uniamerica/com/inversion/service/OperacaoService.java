@@ -61,12 +61,12 @@ public class OperacaoService {
 
     @Transactional
     public Operacao insert(Operacao operacao) {
-        if (validarRequest(operacao)) {
-            BigDecimal precoMedio = this.calculaPrecoMedio(operacao.getUsuario(), operacao.getInvestimento().getId());
-
+        if (this.validarRequest(operacao)) {
+            if (operacao.getTipo().equals(TipoOperacao.venda)){}
+            this.operacaoRepository.save(operacao);
             return operacao;
         } else {
-
+            throw new RuntimeException("Falha ao cadastrar a operacao");
         }
     }
     @Transactional
