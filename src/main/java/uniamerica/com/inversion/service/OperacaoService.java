@@ -62,32 +62,11 @@ public class OperacaoService {
     @Transactional
     public Operacao insert(Operacao operacao) {
         if (validarRequest(operacao)) {
-            BigDecimal precoMedio = this.findValorByTipoCompraAndUsuarioPaginado(operacao.getUsuario(), operacao.getInvestimento().getId());
+            BigDecimal precoMedio = this.calculaPrecoMedio(operacao.getUsuario(), operacao.getInvestimento().getId());
 
-            if (operacao.getTipo().equals(TipoOperacao.venda)) {
-                BigDecimal saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
-                int quantidadeVenda = operacao.getQuantidade();
-
-                if (saldo.compareTo(BigDecimal.ZERO) > 0 && saldo.compareTo(new BigDecimal(quantidadeVenda)) >= 0) {
-                    // Verifique se o saldo é igual a zero ou nulo e redefina o preço médio
-                    if (saldo.compareTo(BigDecimal.ZERO) == 0 || saldo == null) {
-                        BigDecimal resetPrecoMedio = BigDecimal.ZERO;
-                        operacao.setPrecoMedio(resetPrecoMedio);
-                    }
-
-                    this.operacaoRepository.save(operacao);
-                    return operacao;
-                } else {
-                    throw new RuntimeException("Saldo insuficiente para realizar a venda");
-                }
-            } else {
-                operacao.setPrecoMedio(precoMedio);
-                // Para outros tipos de operação, apenas salve no repositório
-                this.operacaoRepository.save(operacao);
-                return operacao;
-            }
+            return operacao;
         } else {
-            throw new RuntimeException("Falha ao cadastrar a operacao");
+
         }
     }
     @Transactional
@@ -161,7 +140,7 @@ public class OperacaoService {
                 this.isValorCaracter(operacao);
     }
 
-    public BigDecimal findValorByTipoCompraAndUsuarioPaginado(Usuario usuario, Long idInvestimento){
+    public BigDecimal calculaPrecoMedio(Usuario usuario, Long idInvestimento){
         var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
 
         BigDecimal valorTotal = BigDecimal.ZERO;
@@ -181,4 +160,28 @@ public class OperacaoService {
         return precoMedio;
     }
 
+    public void salvarPrecoMedio(Operacao operacao){
+
+        BigDecimal precoMedio = this.calculaPrecoMedio(operacao.getUsuario(), operacao.getInvestimento().getId());
+        if (operacao.getTipo().equals(TipoOperacao.venda)) {
+            BigDecimal saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
+            int quantidadeVenda = operacao.getQuantidade();
+
+            if (saldo.compareTo(BigDecimal.ZERO) > 0 && saldo.compareTo(new BigDecimal(quantidadeVenda)) >= 0) {
+                // Verifique se o saldo é igual a zero ou nulo e redefina o preço médio
+                if (saldo.compareTo(BigDecimal.ZERO) == 0 || saldo == null) {
+                    BigDecimal resetPrecoMedio = BigDecimal.ZERO;
+                    operacao.setPrecoMedio(resetPrecoMedio);
+                }
+
+                this.operacaoRepository.save(operacao);
+            } else {
+                throw new RuntimeException("Saldo insuficiente para realizar a venda");
+            }
+        } else {
+            operacao.setPrecoMedio(precoMedio);
+            // Para outros tipos de operação, apenas salve no repositório
+            this.operacaoRepository.save(operacao);
+        }
+    }
 }

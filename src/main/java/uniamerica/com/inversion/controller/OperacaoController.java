@@ -76,7 +76,7 @@ public class OperacaoController {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
         return ResponseEntity.ok().body(
-                this.operacaoService.findValorByTipoCompraAndUsuarioPaginado(usuario, idInvestimento)
+                this.operacaoService.calculaPrecoMedio(usuario, idInvestimento)
         );
     }
 
