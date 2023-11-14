@@ -73,6 +73,7 @@ public class OperacaoController {
     public ResponseEntity<BigDecimal> getPrecoMedioInvestimento(@PathVariable("idInvestimento")  Long idInvestimento) {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
+        TipoOperacao tipoOperacao = TipoOperacao.compra;
         return ResponseEntity.ok().body(
                 this.operacaoService.precoMedio(usuario, idInvestimento, BigDecimal.ZERO)
         );

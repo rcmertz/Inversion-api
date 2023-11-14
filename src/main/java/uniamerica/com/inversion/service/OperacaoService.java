@@ -59,7 +59,7 @@ public class OperacaoService {
     @Transactional
     public Operacao insert(Operacao operacao) {
         if (this.validarRequest(operacao)) {
-            BigDecimal precoMedio = this.precoMedio(operacao.getUsuario(),operacao.getInvestimento().getId(), operacao.getValor());
+            BigDecimal precoMedio = this.precoMedio(operacao.getUsuario(), operacao.getInvestimento().getId(), operacao.getValor());
             operacao.setPreco_medio(precoMedio);
             this.operacaoRepository.save(operacao);
             return operacao;
@@ -146,10 +146,7 @@ public class OperacaoService {
             int quantidadeVenda = operacao.getQuantidade();
 
             if (saldo > 0 && saldo >= quantidadeVenda) {
-                if (saldo - quantidadeVenda <= 0) {
-                    BigDecimal resetPrecoMedio = BigDecimal.ZERO;
-                    operacao.setPreco_medio(resetPrecoMedio);
-                }
+
                 return true;
             } else {
                 return false;
@@ -161,19 +158,32 @@ public class OperacaoService {
         return null;
     }
 
-    public BigDecimal precoMedio(Usuario usuario, Long idInvestimento, BigDecimal valor){
+    public BigDecimal precoMedio(Usuario usuario, Long idInvestimento, BigDecimal valor) {
         var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
         System.out.println(listValor.size());
+
         BigDecimal valorTotal = valor;
         Integer quantidadeTotal = 1;
 
-        for(Operacao operacao: listValor) {
-            valorTotal = valorTotal.add(operacao.getValor());
-            quantidadeTotal += operacao.getQuantidade();
-            if (operacao.getQuantidade() == 0){
-                return BigDecimal.ZERO;
+        for (Operacao operacao : listValor) {
+            if (operacao.getTipo().equals(TipoOperacao.compra)) {
+                valorTotal = valorTotal.add(operacao.getValor());
+                quantidadeTotal += operacao.getQuantidade();
+            } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
+                // Se a quantidade da operação atual for maior ou igual à quantidade total, resete o cálculo
+                if (operacao.getQuantidade() >= quantidadeTotal) {
+                    quantidadeTotal = 0;
+                    valorTotal = BigDecimal.ZERO;
+                } else {
+                    quantidadeTotal -= operacao.getQuantidade();
+                }
             }
         }
-        return  valorTotal.divide(new BigDecimal(quantidadeTotal), 2, RoundingMode.HALF_UP);
+
+        if (quantidadeTotal == 0) {
+            return BigDecimal.ZERO;
+        }
+
+        return valorTotal.divide(new BigDecimal(quantidadeTotal), 2, RoundingMode.HALF_UP);
     }
 }
