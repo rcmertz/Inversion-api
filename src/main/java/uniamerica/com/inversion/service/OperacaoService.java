@@ -136,7 +136,7 @@ public class OperacaoService {
                 this.isValorCaracter(operacao);
     }
 
-    public BigDecimal findValorByTipoCompraAndUsuarioPaginado(Usuario usuario, Long idInvestimento){
+    public BigDecimal precoMedio(Usuario usuario, Long idInvestimento){
         var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
 
         BigDecimal valorTotal = BigDecimal.ZERO;
