@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uniamerica.com.inversion.entity.Carteira;
@@ -38,9 +39,15 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
     Page<Operacao> findByUsuarioAndInvestimentoAndDataBetween(Usuario usuario, Investimento investimento, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
     Page<Operacao> findByUsuarioAndInvestimento(Usuario usuario, Investimento investimento, Pageable pageable);
+
     Optional<Operacao> findByIdAndUsuario(Long Id, Usuario usuario);
 
-    @Query("SELECT o FROM Operacao o WHERE o.investimento.id = :idInvestimento AND o.tipo = 'compra' AND o.ativo = true AND o.usuario = :usuario")
+    @Query("SELECT o FROM Operacao o WHERE o.investimento.id = :idInvestimento AND o.ativo = true AND o.usuario = :usuario")
     List<Operacao> findValorByTipoCompraAndUsuario(Usuario usuario, Long idInvestimento);
+
+    @Query("SELECT COALESCE(SUM(CASE WHEN o.tipo = 'compra' THEN o.quantidade ELSE -o.quantidade END), 0) AS saldo " +
+            "FROM Operacao o " +
+            "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
+    int saldo(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
 
 }

@@ -7,8 +7,6 @@ services:
       - 8082:8082
     depends_on:
       - postgres
-    environment:
-      - DB_HOST=postgres
 
   postgres:
     image: postgres
@@ -18,3 +16,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
       POSTGRES_DB: inversion
+  
+  inversion-front:
+    image: khensane/inversion-front:1.0
+    ports:
+      - 5173:5173

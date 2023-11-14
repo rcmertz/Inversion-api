@@ -44,6 +44,7 @@ public class InvestimentoService {
     @Transactional
     public void update (Long id, Investimento investimento, Usuario usuario) {
         if (checarDono(investimento, usuario)) {
+            
             if (id == investimento.getId() && this.validarRequest(investimento)) {
                 this.investimentoRepository.save(investimento);
             } else {
