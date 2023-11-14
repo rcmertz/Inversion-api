@@ -151,6 +151,7 @@ public class OperacaoService {
                     operacao.setPreco_medio(resetPrecoMedio);
                 }
                 return true;
+
             } else {
                 return false;
             }
