@@ -50,13 +50,16 @@ public class Operacao extends AbstractEntity{
     @Column(name = "preco_medio")
     private BigDecimal preco_medio;
 
-    public Operacao(Usuario usuario, Investimento investimento, BigDecimal valor, Integer quantidade, LocalDateTime data, TipoOperacao tipo, BigDecimal preco_medio) {
+    public Operacao(Usuario usuario, Investimento investimento, BigDecimal valor, Integer quantidade, LocalDateTime data, TipoOperacao tipo) {
         this.usuario = usuario;
         this.investimento = investimento;
         this.valor = valor;
         this.quantidade = quantidade;
         this.data = data;
         this.tipo = tipo;
-        this.preco_medio = preco_medio;
+    }
+    // Método para definir o preço médio
+    public void setPrecoMedio(BigDecimal precoMedio) {
+        this.preco_medio = precoMedio;
     }
 }

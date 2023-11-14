@@ -10,7 +10,6 @@ import uniamerica.com.inversion.repository.UsuarioRepository;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -59,8 +58,6 @@ public class OperacaoService {
     @Transactional
     public Operacao insert(Operacao operacao) {
         if (this.validarRequest(operacao)) {
-            BigDecimal precoMedio = this.precoMedio(operacao.getUsuario(),operacao.getInvestimento().getId(), operacao.getValor());
-            operacao.setPreco_medio(precoMedio);
             this.operacaoRepository.save(operacao);
             return operacao;
         } else {
@@ -136,45 +133,20 @@ public class OperacaoService {
     public Boolean validarRequest(Operacao operacao){
         return this.isOperacaoNotNull(operacao) &&
                 this.isValorNegativo(operacao) &&
-                this.validarSaldo(operacao) &&
                 this.isValorCaracter(operacao);
     }
 
-    public Boolean validarSaldo (Operacao operacao) {
-        if (operacao.getTipo().equals(TipoOperacao.venda)){
-            int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
-            int quantidadeVenda = operacao.getQuantidade();
-
-            if (saldo > 0 && saldo >= quantidadeVenda) {
-                if (saldo - quantidadeVenda <= 0) {
-                    BigDecimal resetPrecoMedio = BigDecimal.ZERO;
-                    operacao.setPreco_medio(resetPrecoMedio);
-                }
-                return true;
-
-            } else {
-                return false;
-            }
-        }else if (operacao.getTipo().equals(TipoOperacao.compra)) {
-            System.out.println("Saldo insuficiente para realizar a venda");
-            return true;
-        }
-        return null;
-    }
-
-    public BigDecimal precoMedio(Usuario usuario, Long idInvestimento, BigDecimal valor){
+    public BigDecimal findValorByTipoCompraAndUsuarioPaginado(Usuario usuario, Long idInvestimento){
         var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
-        System.out.println(listValor.size());
-        BigDecimal valorTotal = valor;
-        Integer quantidadeTotal = 1;
+
+        BigDecimal valorTotal = BigDecimal.ZERO;
+        Integer quantidadeTotal = 0;
 
         for(Operacao operacao: listValor) {
             valorTotal = valorTotal.add(operacao.getValor());
             quantidadeTotal += operacao.getQuantidade();
-            if (operacao.getQuantidade() == 0){
-                return BigDecimal.ZERO;
-            }
         }
-        return  valorTotal.divide(new BigDecimal(quantidadeTotal), 2, RoundingMode.HALF_UP);
-    }
+        return valorTotal.divide(new BigDecimal(quantidadeTotal));
+    };
+
 }
