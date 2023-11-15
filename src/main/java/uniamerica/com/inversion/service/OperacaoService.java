@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.*;
+import uniamerica.com.inversion.repository.CarteiraRepository;
+import uniamerica.com.inversion.repository.InvestimentoRepository;
 import uniamerica.com.inversion.repository.OperacaoRepository;
 import uniamerica.com.inversion.repository.UsuarioRepository;
 
@@ -19,6 +21,15 @@ public class OperacaoService {
 
     @Autowired
     private OperacaoRepository operacaoRepository;
+
+    @Autowired
+    private CarteiraRepository carteiraRepository;
+
+    @Autowired
+    private InvestimentoService investimentoService;
+
+    @Autowired
+    private CarteiraService carteiraService;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -62,6 +73,10 @@ public class OperacaoService {
         if (this.validarRequest(operacao)) {
             BigDecimal precoMedio = this.precoMedio(operacao.getUsuario(), operacao.getInvestimento().getId(), operacao.getValor(), operacao);
             operacao.setPreco_medio(precoMedio);
+            Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
+            Carteira carteira = investimento.getCarteira();
+            carteira.setValorCarteira(carteira.getValorCarteira() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+            carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
             this.operacaoRepository.save(operacao);
             return operacao;
         } else {

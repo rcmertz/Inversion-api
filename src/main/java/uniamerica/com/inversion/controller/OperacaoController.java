@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uniamerica.com.inversion.entity.*;
 import uniamerica.com.inversion.repository.InvestimentoRepository;
+import uniamerica.com.inversion.service.CarteiraService;
 import uniamerica.com.inversion.service.OperacaoService;
 import uniamerica.com.inversion.service.UsuarioService;
 
@@ -31,6 +32,10 @@ public class OperacaoController {
 
     @Autowired
     UsuarioService usuarioService;
+
+    @Autowired
+    CarteiraService carteiraService;
+
     @Autowired
     private InvestimentoRepository investimentoRepository;
 

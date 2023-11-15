@@ -40,16 +40,11 @@ public class Investimento extends AbstractEntity{
     @Column(name = "data")
     private LocalDate data;
 
-    @Getter @Setter
-    @Column(name = "cotacao")
-    private Double cotacaoInvestimento;
-
-    public Investimento(Usuario usuario, Carteira carteira, String nomeInvestimento, Double valorInvestimento, LocalDate data, Double cotacaoInvestimento) {
+    public Investimento(Usuario usuario, Carteira carteira, String nomeInvestimento, Double valorInvestimento, LocalDate data) {
         this.usuario = usuario;
         this.carteira = carteira;
         this.nomeInvestimento = nomeInvestimento;
         this.valorInvestimento = valorInvestimento;
         this.data = data;
-        this.cotacaoInvestimento = cotacaoInvestimento;
     }
 }
