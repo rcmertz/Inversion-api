@@ -42,6 +42,7 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
 
     Optional<Operacao> findByIdAndUsuario(Long Id, Usuario usuario);
 
+    //** RETORNA A LISTA DE OPERAÇÕES TIPO COMPRA CASO NÃO TENHA UMA ÚLTIMA TIPO VENDA QUE O PREÇO MÉDIO SEJA 0  **//
     @Query("SELECT o FROM Operacao o " +
             "WHERE o.investimento.id = :idInvestimento " +
             "AND o.ativo = true " +
@@ -54,12 +55,13 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "ORDER BY o.data DESC")
     List<Operacao> findValorByTipoCompraAndUsuario(@Param("usuario") Usuario usuario, @Param("idInvestimento") Long idInvestimento);
 
-
+    //** RETORNA O SALDO ATUAL DA QUANTIDADE DA OPERAÇÃO **//
     @Query("SELECT COALESCE(SUM(CASE WHEN o.tipo = 'compra' THEN o.quantidade ELSE -o.quantidade END), 0) AS saldo " +
             "FROM Operacao o " +
             "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
     int saldo(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
 
+    //** NOS RETORNA O ÚLTIMO PREÇO MÉDIO CADASTRADO REFERENTE A AQUELA OPERAÇÃO, USAMOS PARA QUANDO O TIPO DA OPERAÇÃO FOR VENDA E NÃO VENDA TUDO  **//
     @Query("SELECT COALESCE(o.preco_medio, 0) " +
             "FROM Operacao o " +
             "WHERE o.investimento.id = :investimentoId " +

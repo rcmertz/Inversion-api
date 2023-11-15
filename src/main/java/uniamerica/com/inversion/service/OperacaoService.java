@@ -56,6 +56,7 @@ public class OperacaoService {
 
     }
 
+    //** PARA CADASTRAR A OPERAÇÃO E CADASTRAR O PREÇO MÉDIO DA OPERAÇÃO  **//
     @Transactional
     public Operacao insert(Operacao operacao) {
         if (this.validarRequest(operacao)) {
@@ -140,6 +141,7 @@ public class OperacaoService {
                 this.isValorCaracter(operacao);
     }
 
+    //** VALIDAMOS O SALDO DE QUANTIDADE PASSADA PELA OPERAÇÃO **//
     public Boolean validarSaldo (Operacao operacao) {
         if (operacao.getTipo().equals(TipoOperacao.venda)) {
             int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
@@ -156,6 +158,7 @@ public class OperacaoService {
         return false;
     }
 
+    //** FAZ O CALCULO DO PREÇO MÉDIO DA OPERAÇÃO  **//
     public BigDecimal precoMedio(Usuario usuario, Long idInvestimento, BigDecimal valor, Operacao operacao) {
         var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
         int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
@@ -165,7 +168,6 @@ public class OperacaoService {
         Integer quantidadeTotal = 1;
 
         if(operacao.getTipo().equals(TipoOperacao.venda)){
-
             if(saldo - operacao.getQuantidade() > 0){
                 return ultimoPrecoMedio;
             }
