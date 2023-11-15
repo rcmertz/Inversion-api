@@ -42,8 +42,18 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
 
     Optional<Operacao> findByIdAndUsuario(Long Id, Usuario usuario);
 
-    @Query("SELECT o FROM Operacao o WHERE o.investimento.id = :idInvestimento AND o.ativo = true AND o.usuario = :usuario")
-    List<Operacao> findValorByTipoCompraAndUsuario(Usuario usuario, Long idInvestimento);
+    @Query("SELECT o FROM Operacao o " +
+            "WHERE o.investimento.id = :idInvestimento " +
+            "AND o.ativo = true " +
+            "AND o.usuario = :usuario " +
+            "AND o.tipo = 'compra' " +
+            "AND o.data >= (SELECT COALESCE(MAX(o2.data), '1900-01-01') FROM Operacao o2 " +
+            "               WHERE o2.investimento.id = :idInvestimento " +
+            "               AND o2.tipo = 'venda' " +
+            "               AND o2.preco_medio = 0) " +
+            "ORDER BY o.data DESC")
+    List<Operacao> findValorByTipoCompraAndUsuario(@Param("usuario") Usuario usuario, @Param("idInvestimento") Long idInvestimento);
+
 
     @Query("SELECT COALESCE(SUM(CASE WHEN o.tipo = 'compra' THEN o.quantidade ELSE -o.quantidade END), 0) AS saldo " +
             "FROM Operacao o " +

@@ -74,8 +74,9 @@ public class OperacaoController {
         UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) currentAuth.getPrincipal();
         TipoOperacao tipoOperacao = TipoOperacao.compra;
+        Operacao Operacao = new Operacao();
         return ResponseEntity.ok().body(
-                this.operacaoService.precoMedio(usuario, idInvestimento, BigDecimal.ZERO)
+                this.operacaoService.precoMedio(usuario, idInvestimento, BigDecimal.ZERO, Operacao)
         );
     }
 

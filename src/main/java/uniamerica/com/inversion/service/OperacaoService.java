@@ -59,7 +59,7 @@ public class OperacaoService {
     @Transactional
     public Operacao insert(Operacao operacao) {
         if (this.validarRequest(operacao)) {
-            BigDecimal precoMedio = this.precoMedio(operacao.getUsuario(), operacao.getInvestimento().getId(), operacao.getValor());
+            BigDecimal precoMedio = this.precoMedio(operacao.getUsuario(), operacao.getInvestimento().getId(), operacao.getValor(), operacao);
             operacao.setPreco_medio(precoMedio);
             this.operacaoRepository.save(operacao);
             return operacao;
@@ -141,49 +141,46 @@ public class OperacaoService {
     }
 
     public Boolean validarSaldo (Operacao operacao) {
-        if (operacao.getTipo().equals(TipoOperacao.venda)){
+        if (operacao.getTipo().equals(TipoOperacao.venda)) {
             int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
             int quantidadeVenda = operacao.getQuantidade();
 
-            if (saldo > 0 && saldo >= quantidadeVenda) {
-
+            if (saldo > 0 && quantidadeVenda <= saldo) {
                 return true;
             } else {
-                return false;
+                throw new RuntimeException("Saldo insuficiente para realizar a venda.");
             }
-        }else if (operacao.getTipo().equals(TipoOperacao.compra)) {
-            System.out.println("Saldo insuficiente para realizar a venda");
+        }
+        if (operacao.getTipo().equals(TipoOperacao.compra)) {
             return true;
         }
-        return null;
+        return false;
     }
 
-    public BigDecimal precoMedio(Usuario usuario, Long idInvestimento, BigDecimal valor) {
+    public BigDecimal precoMedio(Usuario usuario, Long idInvestimento, BigDecimal valor, Operacao operacao) {
         var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
-        System.out.println(listValor.size());
+        int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
 
         BigDecimal valorTotal = valor;
         Integer quantidadeTotal = 1;
 
-        for (Operacao operacao : listValor) {
-            if (operacao.getTipo().equals(TipoOperacao.compra)) {
-                valorTotal = valorTotal.add(operacao.getValor());
-                quantidadeTotal += operacao.getQuantidade();
-            } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
-                // Se a quantidade da operação atual for maior ou igual à quantidade total, resete o cálculo
-                if (operacao.getQuantidade() >= quantidadeTotal) {
-                    quantidadeTotal = 0;
-                    valorTotal = BigDecimal.ZERO;
-                } else {
-                    quantidadeTotal -= operacao.getQuantidade();
-                }
+        if(operacao.getTipo().equals(TipoOperacao.venda)){
+            // Se a quantidade da operação atual for maior ou igual à quantidade total, resete o cálculo
+            if (operacao.getQuantidade() - saldo == 0) {
+                return BigDecimal.ZERO;
+            } if(operacao.getQuantidade() - saldo > 0 ){
+
             }
         }
-
-        if (quantidadeTotal == 0) {
-            return BigDecimal.ZERO;
+        for (Operacao operacaoLista : listValor) {
+            if (operacaoLista.getTipo().equals(TipoOperacao.compra)) {
+                valorTotal = valorTotal.add(operacaoLista.getValor());
+            }
         }
-
+        quantidadeTotal += listValor.size();
+        if (quantidadeTotal == 0) {
+            quantidadeTotal = 1;
+        }
         return valorTotal.divide(new BigDecimal(quantidadeTotal), 2, RoundingMode.HALF_UP);
     }
 }

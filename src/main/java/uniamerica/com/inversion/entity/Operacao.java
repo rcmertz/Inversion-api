@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class Operacao extends AbstractEntity{
     private BigDecimal valor;
 
     @Getter @Setter
+    @Min(1)
     @Column(name = "quantidade")
     private Integer quantidade;
 
