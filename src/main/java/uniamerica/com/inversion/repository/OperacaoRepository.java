@@ -69,4 +69,6 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "AND o.id = (SELECT MAX(o2.id) FROM Operacao o2 WHERE o2.investimento.id = :investimentoId AND o2.tipo = 'compra')")
     BigDecimal findUltimoPrecoMedioCompra(@Param("investimentoId") Long investimentoId);
 
+
+    Optional<Operacao> findTopByInvestimentoAndUsuarioOrderByDataDesc(Investimento investimento, Usuario usuario);
 }

@@ -153,6 +153,7 @@ public class OperacaoService {
         return this.isOperacaoNotNull(operacao) &&
                 this.isValorNegativo(operacao) &&
                 this.validarSaldo(operacao) &&
+                this.validarDataOperacao(operacao) &&
                 this.isValorCaracter(operacao);
     }
 
@@ -173,6 +174,22 @@ public class OperacaoService {
         return false;
     }
 
+    public boolean validarDataOperacao(Operacao novaOperacao) {
+        Optional<Operacao> ultimaOperacaoOptional = operacaoRepository.findTopByInvestimentoAndUsuarioOrderByDataDesc(
+                novaOperacao.getInvestimento(),
+                novaOperacao.getUsuario()
+        );
+        if (ultimaOperacaoOptional.isEmpty()) {
+            return true;
+        } else {
+            Operacao ultimaOperacao = ultimaOperacaoOptional.get();
+            if (novaOperacao.getData().toLocalDate().isBefore(ultimaOperacao.getData().toLocalDate())) {
+                throw new IllegalArgumentException("Não é permitido cadastrar uma operação anterior à última.");
+            }
+            return true;
+        }
+    }
+
     //** FAZ O CALCULO DO PREÇO MÉDIO DA OPERAÇÃO  **//
     public BigDecimal precoMedio(Usuario usuario, Long idInvestimento, BigDecimal valor, Operacao operacao) {
         var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
@@ -187,7 +204,6 @@ public class OperacaoService {
                 BigDecimal ultimoPrecoMedio = operacaoRepository.findUltimoPrecoMedioCompra(operacao.getInvestimento().getId());
                 return ultimoPrecoMedio;
             }
-            // Se a quantidade da operação atual for maior ou igual à quantidade total, resete o cálculo
             if (operacao.getQuantidade() - saldo == 0) {
                 return BigDecimal.ZERO;
             } if(operacao.getQuantidade() - saldo > 0 ){
