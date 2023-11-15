@@ -144,7 +144,6 @@ public class OperacaoService {
         if (operacao.getTipo().equals(TipoOperacao.venda)) {
             int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
             int quantidadeVenda = operacao.getQuantidade();
-
             if (saldo > 0 && quantidadeVenda <= saldo) {
                 return true;
             } else {
@@ -160,11 +159,16 @@ public class OperacaoService {
     public BigDecimal precoMedio(Usuario usuario, Long idInvestimento, BigDecimal valor, Operacao operacao) {
         var listValor = operacaoRepository.findValorByTipoCompraAndUsuario(usuario, idInvestimento);
         int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
+        BigDecimal ultimoPrecoMedio = operacaoRepository.findUltimoPrecoMedioCompra(operacao.getInvestimento().getId());
 
         BigDecimal valorTotal = valor;
         Integer quantidadeTotal = 1;
 
         if(operacao.getTipo().equals(TipoOperacao.venda)){
+
+            if(saldo - operacao.getQuantidade() > 0){
+                return ultimoPrecoMedio;
+            }
             // Se a quantidade da operação atual for maior ou igual à quantidade total, resete o cálculo
             if (operacao.getQuantidade() - saldo == 0) {
                 return BigDecimal.ZERO;

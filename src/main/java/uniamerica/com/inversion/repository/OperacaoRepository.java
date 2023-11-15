@@ -60,4 +60,11 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
     int saldo(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
 
+    @Query("SELECT COALESCE(o.preco_medio, 0) " +
+            "FROM Operacao o " +
+            "WHERE o.investimento.id = :investimentoId " +
+            "AND o.tipo = 'compra' " +
+            "AND o.data = (SELECT MAX(o2.data) FROM Operacao o2 WHERE o2.investimento.id = :investimentoId AND o2.tipo = 'compra')")
+    BigDecimal findUltimoPrecoMedioCompra(@Param("investimentoId") Long investimentoId);
+
 }
