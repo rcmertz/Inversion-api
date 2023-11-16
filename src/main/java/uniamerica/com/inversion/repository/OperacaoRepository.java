@@ -8,10 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import uniamerica.com.inversion.entity.Carteira;
-import uniamerica.com.inversion.entity.Investimento;
-import uniamerica.com.inversion.entity.Operacao;
-import uniamerica.com.inversion.entity.Usuario;
+import uniamerica.com.inversion.entity.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -60,6 +57,12 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "FROM Operacao o " +
             "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
     int saldo(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
+
+    @Query("SELECT o.valor FROM Operacao o WHERE o.id = :id")
+    BigDecimal findValorOperacaoById(@Param("id") Long id);
+
+    @Query("SELECT o.tipo FROM Operacao o WHERE o.id = :id")
+    Optional<TipoOperacao> findOperacaoTipoById(@Param("id") Long id);
 
     //** NOS RETORNA O ÚLTIMO PREÇO MÉDIO CADASTRADO REFERENTE A AQUELA OPERAÇÃO, USAMOS PARA QUANDO O TIPO DA OPERAÇÃO FOR VENDA E NÃO VENDA TUDO  **//
     @Query("SELECT COALESCE(o.preco_medio, 0) " +
