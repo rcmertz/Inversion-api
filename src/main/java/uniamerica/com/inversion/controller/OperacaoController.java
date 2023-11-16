@@ -64,6 +64,13 @@ public class OperacaoController {
         return ResponseEntity.ok().body(this.operacaoService.listAll(pageable, usuario, investimento, dataStart, dataEnd));
     }
 
+    @GetMapping("/relatorio")
+    public ResponseEntity<Page<Operacao>> listByAllPage(Pageable pageable, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> dataStart, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> dataEnd) {
+        UsernamePasswordAuthenticationToken currentAuth = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) currentAuth.getPrincipal();
+        return ResponseEntity.ok().body(this.operacaoService.relatorio(pageable, usuario, dataStart, dataEnd));
+    }
+
     //** ENDPOINT PARA TRAZER TODAS OPERACOES **//
     @GetMapping("/findAll")
     public ResponseEntity<Page<Operacao>> listAllOperacao(Pageable pageable) {

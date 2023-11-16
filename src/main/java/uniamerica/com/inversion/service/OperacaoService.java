@@ -50,6 +50,10 @@ public class OperacaoService {
         }
     }
 
+    public Page<Operacao> relatorio(Pageable pageable, Usuario usuario, Optional<LocalDateTime> dataStart, Optional<LocalDateTime> dataEnd){
+            return this.operacaoRepository.findByUsuario(usuario, pageable);
+    }
+
     //** PARA PEGAR TODAS OPERACOES **//
     public Page<Operacao> listAllOperacao(Pageable pageable, Usuario usuario){
         return this.operacaoRepository.findByUsuario(usuario, pageable);
