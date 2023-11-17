@@ -11,6 +11,7 @@ import uniamerica.com.inversion.entity.Carteira;
 import uniamerica.com.inversion.entity.Investimento;
 import uniamerica.com.inversion.entity.Usuario;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +29,11 @@ public interface CarteiraRepository extends JpaRepository<Carteira, Long> {
     Page<Carteira> findByUsuario(Usuario usuario, Pageable pageable);
 
     Optional<Carteira> findByIdAndUsuario(Long Id, Usuario usuario);
+
+    @Query("SELECT c.valorCarteira FROM Carteira c WHERE c.id = :carteiraId")
+    Double findValorCarteiraById(@Param("carteiraId") Long carteiraId);
+
+    @Query("SELECT c.cadastro FROM Carteira c WHERE c.id = :carteiraId")
+    LocalDateTime findCadastroCarteiraById(@Param("carteiraId") Long carteiraId);
 
 }

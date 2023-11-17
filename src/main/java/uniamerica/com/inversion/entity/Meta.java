@@ -7,6 +7,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -47,6 +50,7 @@ public class Meta extends AbstractEntity{
     private Double valorAporte;
 
     @Getter @Setter
+    @Min(0)
     @Column(name = "rentabilidade")
     private Double rentabilidade;
 

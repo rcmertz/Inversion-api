@@ -6,13 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Carteira;
 import uniamerica.com.inversion.entity.Meta;
+import uniamerica.com.inversion.entity.Operacao;
 import uniamerica.com.inversion.entity.Usuario;
 import uniamerica.com.inversion.repository.CarteiraRepository;
 import uniamerica.com.inversion.repository.MetaRepository;
 import uniamerica.com.inversion.repository.UsuarioRepository;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +43,7 @@ public class MetaService {
 
     @Transactional
     public Meta insert(Meta meta, Usuario usuario) {
-        if (this.validarRequest(meta) &&
-                this.isMetaExist(meta, usuario)) {
+        if (this.validarRequest(meta, usuario)) {
             this.metaRepository.save(meta);
             return meta;
         } else {
@@ -52,7 +54,7 @@ public class MetaService {
     @Transactional
     public void update (Long id, Meta meta, Usuario usuario) {
         if (checarDono(meta, usuario)) {
-            if (id == meta.getId() && this.validarRequest(meta)) {
+            if (id == meta.getId() && this.validarRequest(meta, usuario)) {
                 this.metaRepository.save(meta);
             } else {
                 throw new RuntimeException("Falha ao Atualizar a meta");
@@ -65,7 +67,7 @@ public class MetaService {
     @Transactional
     public void desativar (Long id, Meta meta, Usuario usuario) {
         if (checarDono(meta, usuario)) {
-            if (id == meta.getId() && this.validarRequest(meta)) {
+            if (id == meta.getId() && this.validarRequest(meta, usuario)) {
                 this.metaRepository.save(meta);
             } else {
                 throw new RuntimeException("Falha ao Desativar a meta");
@@ -75,8 +77,15 @@ public class MetaService {
         }
     }
 
+    public Boolean validarRequest(Meta meta, Usuario usuario){
+        return this.isValorCaracter(meta) &&
+                this.isValorMeta(meta) &&
+                this.isDataMeta(meta) &&
+                this.isMetaExist(meta, usuario);
+    }
+
     public Map<String, Double> calcularAporteNecessario(Meta meta) {
-        double valorRealizado = meta.getCarteira().getValorCarteira(); // Usar o valor da carteira como valor realizado
+        double valorRealizado = meta.getCarteira().getValorCarteira();
         double valorMeta = meta.getValorMeta();
         LocalDate dataMeta = meta.getDataMeta();
         LocalDate hoje = LocalDate.now();
@@ -86,7 +95,7 @@ public class MetaService {
         int anosRestantes = periodo.getYears();
         int mesesRestantes = periodo.getMonths();
 
-        double rentabilidade = meta.getRentabilidade() / 100.0; //taxa decimal
+        double rentabilidade = meta.getRentabilidade() / 100.0;
 
         // Converte o tempo total em meses
         int mesesTotais = anosRestantes * 12 + mesesRestantes;
@@ -103,9 +112,6 @@ public class MetaService {
 
         return resultado;
     }
-
-
-
 
     //** VALIDAÇÕES META **//
 
@@ -127,42 +133,41 @@ public class MetaService {
         return true;
     }
 
-//    public Boolean isRealizadoCaracter(Meta meta) {
-//        char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
-//        for (int i = 0; i < meta.getRealizadoMeta().toString().length(); i++) {
-//            char chr = meta.getRealizadoMeta().toString().charAt(i);
-//            for (int j = 0; j < charSearch.length; j++) {
-//                if (charSearch[j] == chr) {
-//                    throw new RuntimeException("O valor realizado inserido não é válido, favor insira um valor sem caracter especial.");
-//                }
-//            }
-//        }
-//        return true;
-//    }
+    public Boolean isValorMeta(Meta meta){
+        Double valorMeta = meta.getValorMeta();
+        Double valorCarteira = carteiraRepository.findValorCarteiraById(meta.getCarteira().getId());
+        if (valorCarteira != null && valorMeta > valorCarteira) {
+            return true;
+        } else {
+            throw new RuntimeException("O valor inserido é menor que o valor da carteira, favor insira um valor válido na meta.");
+        }
+    }
+
+    public Boolean isDataMeta(Meta meta){
+        LocalDateTime dataCadastroCarteira = carteiraRepository.findCadastroCarteiraById(meta.getCarteira().getId());
+        if (meta.getDataMeta().isAfter(dataCadastroCarteira.toLocalDate())) {
+            return true;
+        } else {
+            throw new RuntimeException("A data inserida para sua meta é menor que a data de criação de sua carteira, favor insirir uma data válida na meta.");
+        }
+    }
 
     public Boolean isMetaExist(Meta meta, Usuario usuario) {
         if (meta.getDescricaoMeta() == null || meta.getDescricaoMeta().isEmpty()) {
             throw new RuntimeException("O nome da meta não foi fornecido, favor inserir um nome.");
         } else {
-            // Verificar se já existe uma meta com a mesma descricao
             Meta metaExistente = metaRepository.findByDescricaoMeta(meta.getDescricaoMeta(), usuario.getId());
 
             if (metaExistente != null) {
-                // Verificar se a meta existente está ativo
                 if (metaExistente.isAtivo()) {
                     throw new RuntimeException("Já existe uma meta ativa com o mesmo nome.");
                 } else {
-                    // Permitir a inserção caso a meta existente esteja inativa
                     return true;
                 }
             } else {
                 return true;
             }
         }
-    }
-
-    public Boolean validarRequest(Meta meta){
-        return this.isValorCaracter(meta);
     }
 
 }
