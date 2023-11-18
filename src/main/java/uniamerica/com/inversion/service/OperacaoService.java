@@ -87,6 +87,7 @@ public class OperacaoService {
                 carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
             }
             this.operacaoRepository.save(operacao);
+            operacaoRepository.atualizarSaldoEValorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario() ); //multiplicar a qtd pelo prec unit
             return operacao;
         } else {
             throw new RuntimeException("Falha ao cadastrar a operacao");
@@ -174,6 +175,12 @@ public class OperacaoService {
                 this.validarSaldo(operacao) &&
                 this.validarDataOperacao(operacao) &&
                 this.isValorCaracter(operacao);
+    }
+
+    public void updateSaldoInvestimento(Operacao operacao, Usuario usuario){
+        int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
+
+
     }
 
     //** VALIDAMOS O SALDO DE QUANTIDADE PASSADA PELA OPERAÇÃO **//

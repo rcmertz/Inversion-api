@@ -64,4 +64,7 @@ public class Operacao extends AbstractEntity{
     public void setPrecoMedio(BigDecimal precoMedio) {
         this.preco_medio = precoMedio;
     }
+    public BigDecimal getValorTotal() {
+        return this.valor.multiply(new BigDecimal(this.quantidade));
+    }
 }

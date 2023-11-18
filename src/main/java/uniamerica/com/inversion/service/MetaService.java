@@ -43,7 +43,7 @@ public class MetaService {
 
     @Transactional
     public Meta insert(Meta meta, Usuario usuario) {
-        if (this.validarRequest(meta, usuario)) {
+        if (this.validarRequest(meta) && this.isMetaExist(meta, usuario)) {
             this.metaRepository.save(meta);
             return meta;
         } else {
@@ -54,7 +54,7 @@ public class MetaService {
     @Transactional
     public void update (Long id, Meta meta, Usuario usuario) {
         if (checarDono(meta, usuario)) {
-            if (id == meta.getId() && this.validarRequest(meta, usuario)) {
+            if (id == meta.getId() && this.validarRequest(meta)) {
                 this.metaRepository.save(meta);
             } else {
                 throw new RuntimeException("Falha ao Atualizar a meta");
@@ -67,7 +67,7 @@ public class MetaService {
     @Transactional
     public void desativar (Long id, Meta meta, Usuario usuario) {
         if (checarDono(meta, usuario)) {
-            if (id == meta.getId() && this.validarRequest(meta, usuario)) {
+            if (id == meta.getId() && this.validarRequest(meta)) {
                 this.metaRepository.save(meta);
             } else {
                 throw new RuntimeException("Falha ao Desativar a meta");
@@ -77,11 +77,10 @@ public class MetaService {
         }
     }
 
-    public Boolean validarRequest(Meta meta, Usuario usuario){
+    public Boolean validarRequest(Meta meta){
         return this.isValorCaracter(meta) &&
                 this.isValorMeta(meta) &&
-                this.isDataMeta(meta) &&
-                this.isMetaExist(meta, usuario);
+                this.isDataMeta(meta);
     }
 
     public Map<String, Double> calcularAporteNecessario(Meta meta) {

@@ -33,12 +33,16 @@ public class Investimento extends AbstractEntity{
     private String nomeInvestimento;
 
     @Getter @Setter
-    @Column(name = "valor")
+    @Column(name = "valor", nullable = false)
     private Double valorInvestimento;
 
     @Getter @Setter
     @Column(name = "data")
     private LocalDate data;
+
+    @Getter @Setter
+    @Column(name = "saldo", nullable = false)
+    private Integer saldo;
 
     public Investimento(Usuario usuario, Carteira carteira, String nomeInvestimento, Double valorInvestimento, LocalDate data) {
         this.usuario = usuario;
@@ -46,5 +50,11 @@ public class Investimento extends AbstractEntity{
         this.nomeInvestimento = nomeInvestimento;
         this.valorInvestimento = valorInvestimento;
         this.data = data;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.saldo = 0;
+        this.valorInvestimento = 0.00;
     }
 }
