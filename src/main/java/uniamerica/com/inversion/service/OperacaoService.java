@@ -54,7 +54,11 @@ public class OperacaoService {
     }
 
     public Page<Operacao> relatorio(Pageable pageable, Usuario usuario, Optional<LocalDateTime> dataStart, Optional<LocalDateTime> dataEnd){
-            return this.operacaoRepository.findByUsuario(usuario, pageable);
+        if (dataStart.isPresent() && dataEnd.isPresent()) {
+            return this.operacaoRepository.findByUsuarioAndDataBetween(usuario, dataStart.get(), dataEnd.get(), pageable);
+        }else {
+            throw new RuntimeException("Data Start e Data End precisa ser preenchido ambos");
+        }
     }
 
     //** PARA PEGAR TODAS OPERACOES **//
@@ -80,17 +84,10 @@ public class OperacaoService {
         if (this.validarRequest(operacao)) {
             BigDecimal precoMedio = this.precoMedio(operacao.getUsuario(), operacao.getInvestimento().getId(), operacao.getValor(), operacao);
             operacao.setPreco_medio(precoMedio);
-            Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
-            Carteira carteira = investimento.getCarteira();
-            if (operacao.getTipo().equals(TipoOperacao.compra)) {
-                carteira.setValorCarteira(carteira.getValorCarteira() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
-                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
-            } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
-                carteira.setValorCarteira(carteira.getValorCarteira() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
-                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
-            }
+            insertCarteira(operacao);
+            insertSaldo(operacao);
+            insertValorInvestimento(operacao);
             this.operacaoRepository.save(operacao);
-            operacaoRepository.atualizarSaldoEValorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario() );
             return operacao;
         } else {
             throw new RuntimeException("Falha ao cadastrar a operacao");
@@ -101,6 +98,8 @@ public class OperacaoService {
     public void update (Long id, Operacao operacao, Usuario usuario) {
         if (checarDono(operacao, usuario)) {
             if (id == operacao.getId() && this.validarRequest(operacao)) {
+//                updateSaldo(operacao);
+//                updateValorInvestimento(operacao);
                 updateCarteira(operacao, usuario);
                 this.operacaoRepository.save(operacao);
             } else {
@@ -125,7 +124,7 @@ public class OperacaoService {
                     carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
                 }
                 this.operacaoRepository.save(operacao);
-                operacaoRepository.atualizarSaldoEValorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario() );
+//                operacaoRepository.atualizarSaldoEValorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario() );
             } else {
                 throw new RuntimeException("Falha ao Desativar a operacao");
             }
@@ -198,6 +197,93 @@ public class OperacaoService {
             return true;
         }
         return false;
+    }
+
+    @Transactional
+    public void insertSaldo(Operacao operacao) {
+        Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
+        if (operacao.getTipo().equals(TipoOperacao.compra)) {
+            investimento.setSaldo(investimento.getSaldo() + operacao.getQuantidade());
+            investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+        } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
+            investimento.setSaldo(investimento.getSaldo() - operacao.getQuantidade());
+            investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+        }
+    }
+
+    @Transactional
+    public void insertValorInvestimento(Operacao operacao) {
+        Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
+        if (operacao.getTipo().equals(TipoOperacao.compra)) {
+            investimento.setValorInvestimento(investimento.getValorInvestimento() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+            investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+        } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
+            double valorOperacao = Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade()))));
+            int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
+            double valorInv = operacaoRepository.valorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario()) * saldo;
+
+            if (valorOperacao <= valorInv) {
+                investimento.setValorInvestimento(investimento.getValorInvestimento() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            }else {
+                throw new RuntimeException("Valor que você esta tentando vender é maior que o valor investido !");
+            }
+        }
+    }
+
+//    @Transactional
+//    public void updateValorInvestimento(Operacao operacao, Usuario usuario) {
+//        Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
+//        BigDecimal valorOperacaoBanco = this.operacaoRepository.findValorOperacaoById(operacao.getId());
+//
+//        if (operacao.getTipo().equals(TipoOperacao.compra)) {
+//            if (operacao.getValor().compareTo(valorOperacaoBanco) > 0) {
+//                carteira.setValorCarteira(carteira.getValorCarteira() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+//                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//            } else if (operacao.getValor().compareTo(valorOperacaoBanco) == 0) {
+//                if (!this.isOperacaoTipoVenda(operacao.getId())) {
+//                    carteira.setValorCarteira(carteira.getValorCarteira());
+//                    carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//                } else {
+//                    carteira.setValorCarteira(carteira.getValorCarteira() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+//                    carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//                }
+//                carteira.setValorCarteira(carteira.getValorCarteira());
+//                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//            } else {
+//                carteira.setValorCarteira(carteira.getValorCarteira() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+//                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//            }
+//        } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
+//            if (operacao.getValor().compareTo(valorOperacaoBanco) > 0) {
+//                carteira.setValorCarteira(carteira.getValorCarteira() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+//                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//            } else if (operacao.getValor().compareTo(valorOperacaoBanco) == 0) {
+//                if (this.isOperacaoTipoVenda(operacao.getId())) {
+//                    carteira.setValorCarteira(carteira.getValorCarteira());
+//                    carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//                } else {
+//                    carteira.setValorCarteira(carteira.getValorCarteira() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+//                    carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//                }
+//            } else {
+//                carteira.setValorCarteira(carteira.getValorCarteira() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+//                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+//            }
+//        }
+//    }
+
+    @Transactional
+    public void insertCarteira(Operacao operacao) {
+        Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
+        Carteira carteira = investimento.getCarteira();
+        if (operacao.getTipo().equals(TipoOperacao.compra)) {
+            carteira.setValorCarteira(carteira.getValorCarteira() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+            carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+        } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
+            carteira.setValorCarteira(carteira.getValorCarteira() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+            carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+        }
     }
 
     @Transactional

@@ -23,16 +23,16 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "SET operacao.ativo = false " +
             "WHERE operacao.id = :operacao")
     public void desativar(@Param("operacao") Long idOperacao);
-    @Modifying
-    @Query("UPDATE Investimento i SET " +
-            "i.saldo = COALESCE((SELECT SUM(CASE WHEN o.tipo = 'compra' THEN o.quantidade ELSE -o.quantidade END) " +
-            "FROM Operacao o WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario), 0), " +
-            "i.valorInvestimento = COALESCE((SELECT SUM(o.valor * o.quantidade) " +
-            "FROM Operacao o WHERE o.investimento.id = :investimentoId AND o.tipo = 'compra' AND o.ativo = true AND o.usuario = :usuario), 0) " +
-            "- COALESCE((SELECT SUM(o.valor * o.quantidade) " +
-            "FROM Operacao o WHERE o.investimento.id = :investimentoId AND o.tipo = 'venda' AND o.ativo = true AND o.usuario = :usuario), 0) " +
-            "WHERE i.id = :investimentoId")
-    void atualizarSaldoEValorInvestimento(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
+//    @Modifying
+//    @Query("UPDATE Investimento i SET " +
+//            "i.saldo = COALESCE((SELECT SUM(CASE WHEN o.tipo = 'compra' THEN o.quantidade ELSE -o.quantidade END) " +
+//            "FROM Operacao o WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario), 0), " +
+//            "i.valorInvestimento = COALESCE((SELECT SUM(o.valor * o.quantidade) " +
+//            "FROM Operacao o WHERE o.investimento.id = :investimentoId AND o.tipo = 'compra' AND o.ativo = true AND o.usuario = :usuario), 0) " +
+//            "- COALESCE((SELECT SUM(o.valor * o.quantidade) " +
+//            "FROM Operacao o WHERE o.investimento.id = :investimentoId AND o.tipo = 'venda' AND o.ativo = true AND o.usuario = :usuario), 0) " +
+//            "WHERE i.id = :investimentoId")
+//    void atualizarSaldoEValorInvestimento(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
 
     //** PARA TRAZER TODAS OPERACOES POR CARTEIRA, USADO PARA PAGINAR RANGE DE DATA  **//
     Page<Operacao> findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(Long carteira, Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
@@ -41,6 +41,8 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
     Page<Operacao> findByInvestimento_CarteiraIdAndUsuario(Long carteira, Usuario usuario, Pageable pageable);
 
     Page<Operacao> findByUsuario(Usuario usuario, Pageable pageable);
+
+    Page<Operacao> findByUsuarioAndDataBetween(Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
     //** FILTRAR POR INVESTIMENTO E DATA  **//
     Page<Operacao> findByUsuarioAndInvestimentoAndDataBetween(Usuario usuario, Investimento investimento, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
@@ -67,6 +69,11 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "FROM Operacao o " +
             "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
     int saldo(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
+
+    @Query("SELECT COALESCE(SUM(CASE WHEN o.tipo = 'compra' THEN o.valor ELSE -o.valor END), 0) AS valorInvestimento " +
+            "FROM Operacao o " +
+            "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
+    Double valorInvestimento(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
 
     @Query("SELECT o.valor FROM Operacao o WHERE o.id = :id")
     BigDecimal findValorOperacaoById(@Param("id") Long id);
