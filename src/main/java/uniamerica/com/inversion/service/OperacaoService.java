@@ -29,6 +29,9 @@ public class OperacaoService {
     private InvestimentoService investimentoService;
 
     @Autowired
+    private InvestimentoRepository investimentoRepository;
+
+    @Autowired
     private CarteiraService carteiraService;
 
     @Autowired
@@ -87,7 +90,7 @@ public class OperacaoService {
                 carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
             }
             this.operacaoRepository.save(operacao);
-            operacaoRepository.atualizarSaldoEValorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario() ); //multiplicar a qtd pelo prec unit
+            operacaoRepository.atualizarSaldoEValorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario() );
             return operacao;
         } else {
             throw new RuntimeException("Falha ao cadastrar a operacao");
@@ -122,6 +125,7 @@ public class OperacaoService {
                     carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
                 }
                 this.operacaoRepository.save(operacao);
+                operacaoRepository.atualizarSaldoEValorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario() );
             } else {
                 throw new RuntimeException("Falha ao Desativar a operacao");
             }
@@ -155,6 +159,8 @@ public class OperacaoService {
         }
     }
 
+
+
     //Valida se o campo valor chegou com caracter especial
     public Boolean isValorCaracter(Operacao operacao) {
         char[] charSearch = {'[', '@', '_', '!', '#', '$', '%', '^', '&', '*', '(', ')', '<', '>', '?', '/', '|', '}', '{', '~', ':', ']'};
@@ -177,12 +183,6 @@ public class OperacaoService {
                 this.isValorCaracter(operacao);
     }
 
-    public void updateSaldoInvestimento(Operacao operacao, Usuario usuario){
-        int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
-
-
-    }
-
     //** VALIDAMOS O SALDO DE QUANTIDADE PASSADA PELA OPERAÇÃO **//
     public Boolean validarSaldo (Operacao operacao) {
         if (operacao.getTipo().equals(TipoOperacao.venda)) {
@@ -201,7 +201,7 @@ public class OperacaoService {
     }
 
     @Transactional
-    public void updateCarteira(Operacao operacao, Usuario usuario) { //testar por USUARIO
+    public void updateCarteira(Operacao operacao, Usuario usuario) {
         Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
         Carteira carteira = investimento.getCarteira();
         BigDecimal valorOperacaoBanco = this.operacaoRepository.findValorOperacaoById(operacao.getId());

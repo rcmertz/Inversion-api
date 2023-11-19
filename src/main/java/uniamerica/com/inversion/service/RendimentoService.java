@@ -5,8 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uniamerica.com.inversion.entity.Carteira;
+import uniamerica.com.inversion.entity.Operacao;
 import uniamerica.com.inversion.entity.Rendimento;
 import uniamerica.com.inversion.entity.Usuario;
+import uniamerica.com.inversion.repository.OperacaoRepository;
 import uniamerica.com.inversion.repository.RendimentoRepository;
 import uniamerica.com.inversion.repository.UsuarioRepository;
 
@@ -22,6 +24,9 @@ public class RendimentoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    OperacaoRepository operacaoRepository;
 
     public Rendimento findById(Long id, Usuario usuario) {
         return this.rendimentoRepository.findByIdAndUsuario(id, usuario).orElse(new Rendimento());
@@ -124,11 +129,26 @@ public class RendimentoService {
         }
         return true;
     }
+    public boolean validarDataORendimento(Rendimento rendimento) {
+        Operacao operacao = operacaoRepository.findById(rendimento.getOperacao().getId())
+                .orElseThrow(() -> new RuntimeException("Operação não encontrada para o ID: " + rendimento.getOperacao().getId()));
+
+        if (operacao.getData() == null) {
+            throw new RuntimeException("A data da operação não pode ser nula!");
+        }
+
+        if (rendimento.getData().isAfter(operacao.getData())) {
+            return true;
+        } else {
+            throw new RuntimeException("A data do rendimento não pode ser anterior à data da operação!");
+        }
+    }
 
     public boolean validarRequest(Rendimento rendimento) {
         return this.isPrecoNotNull(rendimento) &&
                 this.isQuantidadeNotNull(rendimento) &&
                 this.isPrecoCaracter(rendimento) &&
+                this.validarDataORendimento(rendimento) &&
                 this.isQuantidadeCaracter(rendimento);
     }
 
