@@ -190,17 +190,29 @@ public class OperacaoService {
     public Boolean validarSaldo(Operacao operacao) {
         if (operacao.getTipo().equals(TipoOperacao.venda)) {
             int saldoTotal = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
+            if (operacao.getId() == null){
+                Long idUltimaCompra = operacaoRepository.findUltimaOperacaoCompraId(operacao.getInvestimento().getId(), operacao.getUsuario());
+                int quantidadeAtual = operacaoRepository.findQuantidadeById(idUltimaCompra) ;
+                int saldoDisponivel = saldoTotal - quantidadeAtual;
 
-            int quantidadeAtual = operacaoRepository.findById(operacao.getId()).get().getQuantidade() ;
+                int quantidadeVenda = operacao.getQuantidade();
 
-            int saldoDisponivel = saldoTotal - quantidadeAtual;
+                if (saldoDisponivel >= 0) {
+                    return true;
+                } else {
+                    throw new RuntimeException("Saldo insuficiente para realizar a venda.");
+                }
+            }else{
+                int quantidadeAtual = operacaoRepository.findQuantidadeById(operacao.getId()) ;
+                int saldoDisponivel = saldoTotal - quantidadeAtual;
 
-            int quantidadeVenda = operacao.getQuantidade();
+                int quantidadeVenda = operacao.getQuantidade();
 
-            if (saldoDisponivel >= quantidadeVenda) {
-                return true;
-            } else {
-                throw new RuntimeException("Saldo insuficiente para realizar a venda.");
+                if (saldoDisponivel >= quantidadeVenda) {
+                    return true;
+                } else {
+                    throw new RuntimeException("Saldo insuficiente para realizar a venda.");
+                }
             }
         }
 
