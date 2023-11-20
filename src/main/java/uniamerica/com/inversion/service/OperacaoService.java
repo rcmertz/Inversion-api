@@ -85,8 +85,8 @@ public class OperacaoService {
             BigDecimal precoMedio = this.precoMedio(operacao.getUsuario(), operacao.getInvestimento().getId(), operacao.getValor(), operacao);
             operacao.setPreco_medio(precoMedio);
             insertCarteira(operacao);
-            insertSaldo(operacao);
             insertValorInvestimento(operacao);
+            insertSaldo(operacao);
             this.operacaoRepository.save(operacao);
             return operacao;
         } else {
@@ -239,6 +239,9 @@ public class OperacaoService {
         } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
             investimento.setSaldo(investimento.getSaldo() - operacao.getQuantidade());
             investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            if (investimento.getSaldo() == 0){
+                insertValorInvestimentoZerado(operacao);
+            }
         }
     }
 
@@ -285,6 +288,13 @@ public class OperacaoService {
             investimento.setValorInvestimento(investimento.getValorInvestimento() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
             investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
         }
+    }
+    @Transactional
+    public void insertValorInvestimentoZerado(Operacao operacao) {
+        Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
+        double valorNovo = 0.00;
+        investimento.setValorInvestimento(valorNovo);
+        investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
     }
 
     @Transactional
