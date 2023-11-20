@@ -142,12 +142,14 @@ public class MetaService {
         }
     }
 
-    public Boolean isDataMeta(Meta meta){
+    public Boolean isDataMeta(Meta meta) {
         LocalDateTime dataCadastroCarteira = carteiraRepository.findCadastroCarteiraById(meta.getCarteira().getId());
-        if (meta.getDataMeta().isAfter(dataCadastroCarteira.toLocalDate())) {
+        LocalDate dataMeta = meta.getDataMeta();
+
+        if (dataMeta.isAfter(dataCadastroCarteira.toLocalDate().plusMonths(1))) {
             return true;
         } else {
-            throw new RuntimeException("A data inserida para sua meta é menor que a data de criação de sua carteira, favor insirir uma data válida na meta.");
+            throw new RuntimeException("A data inserida para sua meta não está pelo menos um mês à frente da data de criação de sua carteira. Favor inserir uma data válida na meta.");
         }
     }
 

@@ -155,7 +155,13 @@ public class OperacaoService {
         }
     }
 
-
+    public Boolean isValorZerado(Operacao operacao){
+        if (!operacao.getValor().equals(BigDecimal.ZERO)) {
+            return true;
+        } else {
+            throw new RuntimeException("Valor está R$0,00, favor inserir um valor.");
+        }
+    }
 
     //Valida se o campo valor chegou com caracter especial
     public Boolean isValorCaracter(Operacao operacao) {
@@ -176,19 +182,17 @@ public class OperacaoService {
                 this.isValorNegativo(operacao) &&
                 this.validarSaldo(operacao) &&
                 this.validarDataOperacao(operacao) &&
+                this.isValorZerado(operacao) &&
                 this.isValorCaracter(operacao);
     }
 
     //** VALIDAMOS O SALDO DE QUANTIDADE PASSADA PELA OPERAÇÃO **//
     public Boolean validarSaldo(Operacao operacao) {
         if (operacao.getTipo().equals(TipoOperacao.venda)) {
-            // Obtenha o saldo total para o investimento e usuário
             int saldoTotal = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
 
-            // Obtenha a quantidade da operação sendo editada
             int quantidadeAtual = operacaoRepository.findById(operacao.getId()).get().getQuantidade() ;
 
-            // Subtraia a quantidade da operação sendo editada do saldo total
             int saldoDisponivel = saldoTotal - quantidadeAtual;
 
             int quantidadeVenda = operacao.getQuantidade();
@@ -219,48 +223,6 @@ public class OperacaoService {
         }
     }
 
-//    @Transactional
-//    public void updateSaldo(Operacao operacao, Usuario usuario) {
-//        Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
-//        int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
-//        int qtdBanco = operacaoRepository.findQuantidadeById(operacao.getId());
-//        int diferencaQtd = qtdBanco - operacao.getQuantidade();
-//        if (operacao.getTipo().equals(TipoOperacao.compra)) {
-//            if (operacao.getQuantidade().compareTo(saldo) > 0) {
-//                investimento.setSaldo(investimento.getSaldo() + operacao.getQuantidade());
-//                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//            } else if (operacao.getQuantidade().compareTo(saldo) == 0) {
-//                if (!this.isOperacaoTipoVenda(operacao.getId())) {
-//                    investimento.setSaldo(investimento.getSaldo());
-//                    investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//                } else {
-//                    investimento.setSaldo(investimento.getSaldo() + operacao.getQuantidade());
-//                    investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//                }
-//                investimento.setSaldo(investimento.getSaldo());
-//                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//            } else {
-//                investimento.setSaldo(investimento.getSaldo() - diferencaQtd);
-//                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//            }
-//        } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
-//            if (operacao.getQuantidade().compareTo(saldo) > 0) {
-//                investimento.setSaldo(investimento.getSaldo() - operacao.getQuantidade());
-//                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//            } else if (operacao.getQuantidade().compareTo(saldo) == 0) {
-//                if (this.isOperacaoTipoVenda(operacao.getId())) {
-//                    investimento.setSaldo(investimento.getSaldo());
-//                    investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//                } else {
-//                    investimento.setSaldo(investimento.getSaldo() - operacao.getQuantidade());
-//                    investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//                }
-//            } else {
-//                investimento.setSaldo(investimento.getSaldo() + operacao.getQuantidade());
-//                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-//            }
-//        }
-//    }
     @Transactional
     public void desativarSaldo(Operacao operacao, Usuario usuario) {
         Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
