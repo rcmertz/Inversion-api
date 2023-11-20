@@ -180,19 +180,30 @@ public class OperacaoService {
     }
 
     //** VALIDAMOS O SALDO DE QUANTIDADE PASSADA PELA OPERAÇÃO **//
-    public Boolean validarSaldo (Operacao operacao) {
+    public Boolean validarSaldo(Operacao operacao) {
         if (operacao.getTipo().equals(TipoOperacao.venda)) {
-            int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
+            // Obtenha o saldo total para o investimento e usuário
+            int saldoTotal = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
+
+            // Obtenha a quantidade da operação sendo editada
+            int quantidadeAtual = operacaoRepository.findById(operacao.getId()).get().getQuantidade() ;
+
+            // Subtraia a quantidade da operação sendo editada do saldo total
+            int saldoDisponivel = saldoTotal - quantidadeAtual;
+
             int quantidadeVenda = operacao.getQuantidade();
-            if (saldo > 0 && quantidadeVenda <= saldo) {
+
+            if (saldoDisponivel >= quantidadeVenda) {
                 return true;
             } else {
                 throw new RuntimeException("Saldo insuficiente para realizar a venda.");
             }
         }
+
         if (operacao.getTipo().equals(TipoOperacao.compra)) {
             return true;
         }
+
         return false;
     }
 

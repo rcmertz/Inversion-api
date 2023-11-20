@@ -28,7 +28,6 @@ public class Usuario extends AbstractEntity implements UserDetails {
     private String nome;
 
     @Getter @Setter
-    @CPF(message = "CPF NAO ENCONTRADO")
     @Column(name = "cpf", unique = true, length = 15)
     private String cpf;
 
