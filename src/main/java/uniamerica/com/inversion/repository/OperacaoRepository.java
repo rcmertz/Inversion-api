@@ -89,5 +89,9 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
     BigDecimal findUltimoPrecoMedioCompra(@Param("investimentoId") Long investimentoId);
 
 
-    Optional<Operacao> findTopByInvestimentoAndUsuarioOrderByDataDesc(Investimento investimento, Usuario usuario);
+        Optional<Operacao> findTopByInvestimentoAndUsuarioAndAtivoOrderByDataDesc(
+                Investimento investimento,
+                Usuario usuario,
+                boolean ativo
+        );
 }

@@ -117,7 +117,7 @@ public class OperacaoService {
     @Transactional
     public void desativar (Long id, Operacao operacao, Usuario usuario) {
         if (checarDono(operacao, usuario)) {
-            if (id == operacao.getId() && this.validarRequest(operacao)) {
+            if (id == operacao.getId() && this.validarRequestDesativar(operacao)) {
                 desativarSaldo(operacao, usuario);
                 desativarValorInvestimento(operacao, usuario);
                 desativarCarteira(operacao, usuario);
@@ -186,6 +186,13 @@ public class OperacaoService {
                 this.isValorCaracter(operacao);
     }
 
+    public Boolean validarRequestDesativar(Operacao operacao){
+        return this.isOperacaoNotNull(operacao) &&
+                this.isValorNegativo(operacao) &&
+                this.isValorZerado(operacao) &&
+                this.isValorCaracter(operacao);
+    }
+
     //** VALIDAMOS O SALDO DE QUANTIDADE PASSADA PELA OPERAÇÃO **//
     public Boolean validarSaldo(Operacao operacao) {
         if (operacao.getTipo().equals(TipoOperacao.venda)) {
@@ -239,11 +246,21 @@ public class OperacaoService {
     public void desativarSaldo(Operacao operacao, Usuario usuario) {
         Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
         if (operacao.getTipo().equals(TipoOperacao.compra) && !operacao.isAtivo()) {
-            investimento.setSaldo(investimento.getSaldo() - operacao.getQuantidade());
-            investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            if(investimento.getSaldo() - operacao.getQuantidade() <= 0 ){
+                investimento.setSaldo(0);
+                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            }else{
+                investimento.setSaldo(investimento.getSaldo() - operacao.getQuantidade());
+                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            }
         } else if (operacao.getTipo().equals(TipoOperacao.venda) && !operacao.isAtivo()) {
-            investimento.setSaldo(investimento.getSaldo() + operacao.getQuantidade());
-            investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            if(investimento.getSaldo() - operacao.getQuantidade() <= 0 ){
+                investimento.setSaldo(0);
+                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            }else{
+                investimento.setSaldo(investimento.getSaldo() + operacao.getQuantidade());
+                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            }
         }
     }
     @Transactional
@@ -390,16 +407,18 @@ public class OperacaoService {
     }
 
     public boolean validarDataOperacao(Operacao novaOperacao) {
-        Optional<Operacao> ultimaOperacaoOptional = operacaoRepository.findTopByInvestimentoAndUsuarioOrderByDataDesc(
+        Optional<Operacao> ultimaOperacaoOptional = operacaoRepository.findTopByInvestimentoAndUsuarioAndAtivoOrderByDataDesc(
                 novaOperacao.getInvestimento(),
-                novaOperacao.getUsuario()
+                novaOperacao.getUsuario(),
+                true
         );
+
         if (ultimaOperacaoOptional.isEmpty()) {
             return true;
         } else {
             Operacao ultimaOperacao = ultimaOperacaoOptional.get();
             if (novaOperacao.getData().toLocalDate().isBefore(ultimaOperacao.getData().toLocalDate())) {
-                throw new IllegalArgumentException("Não é permitido cadastrar uma operação anterior à última.");
+                throw new IllegalArgumentException("Não é permitido cadastrar uma operação anterior à última ativa.");
             }
             return true;
         }
