@@ -75,8 +75,13 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "WHERE o.investimento.id = :investimentoId AND o.ativo = true AND o.usuario = :usuario")
     Double valorInvestimento(@Param("investimentoId") Long investimentoId, @Param("usuario") Usuario usuario);
 
+    @Query("SELECT o.quantidade FROM Operacao o WHERE o.id = :operacaoId")
+    Integer findQuantidadeById(@Param("operacaoId") Long id);
     @Query("SELECT o.valor FROM Operacao o WHERE o.id = :id")
     BigDecimal findValorOperacaoById(@Param("id") Long id);
+
+    @Query("SELECT o.valor * o.quantidade FROM Operacao o WHERE o.id = :id")
+    BigDecimal findValorTotalOperacaoById(@Param("id") Long id);
 
     @Query("SELECT o.tipo FROM Operacao o WHERE o.id = :id")
     Optional<TipoOperacao> findOperacaoTipoById(@Param("id") Long id);

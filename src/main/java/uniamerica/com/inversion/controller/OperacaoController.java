@@ -91,7 +91,6 @@ public class OperacaoController {
                 this.operacaoService.precoMedio(usuario, idInvestimento, BigDecimal.ZERO, Operacao)
         );
     }
-
     @PostMapping
     public ResponseEntity<?> insert(@RequestBody Operacao operacao) {
         try {
