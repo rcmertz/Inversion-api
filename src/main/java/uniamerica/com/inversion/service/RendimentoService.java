@@ -29,7 +29,7 @@ public class RendimentoService {
     OperacaoRepository operacaoRepository;
 
     public Rendimento findById(Long id, Usuario usuario) {
-        return this.rendimentoRepository.findByIdAndUsuario(id, usuario).orElse(new Rendimento());
+        return this.rendimentoRepository.findByIdAndUsuarioAndAtivoIsTrue(id, usuario).orElse(new Rendimento());
     }
 
     public Page<Rendimento> listAll(Pageable pageable, Usuario usuario) {

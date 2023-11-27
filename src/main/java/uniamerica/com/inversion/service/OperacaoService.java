@@ -39,15 +39,15 @@ public class OperacaoService {
 
     //** PARA PEGAR UMA OPERACAO POR ID **//
     public Operacao findById(Long id, Usuario usuario){
-        return this.operacaoRepository.findByIdAndUsuario(id, usuario).orElse(new Operacao());
+        return this.operacaoRepository.findByIdAndUsuarioAndAtivoIsTrue(id, usuario).orElse(new Operacao());
     }
 
     //** PARA FILTRAR POR UM INVESTIMENTO E POR RANGE DE DATA**//
     public Page<Operacao> listAll(Pageable pageable, Usuario usuario, Optional<Investimento> investimento, Optional<LocalDateTime> dataStart, Optional<LocalDateTime> dataEnd){
         if (investimento.isPresent() && dataStart.isPresent() && dataEnd.isPresent()) {
-            return this.operacaoRepository.findByUsuarioAndInvestimentoAndDataBetween(usuario, investimento.get(), dataStart.get(), dataEnd.get(), pageable);
+            return this.operacaoRepository.findByUsuarioAndInvestimentoAndDataBetweenAndAtivoIsTrue(usuario, investimento.get(), dataStart.get(), dataEnd.get(), pageable);
         }else if (investimento.isPresent()){
-            return this.operacaoRepository.findByUsuarioAndInvestimento(usuario, investimento.get(), pageable);
+            return this.operacaoRepository.findByUsuarioAndInvestimentoAndAtivoIsTrue(usuario, investimento.get(), pageable);
         }else{
             return this.operacaoRepository.findByUsuario(usuario, pageable);
         }
@@ -55,7 +55,7 @@ public class OperacaoService {
 
     public Page<Operacao> relatorio(Pageable pageable, Usuario usuario, Optional<LocalDateTime> dataStart, Optional<LocalDateTime> dataEnd){
         if (dataStart.isPresent() && dataEnd.isPresent()) {
-            return this.operacaoRepository.findByUsuarioAndDataBetween(usuario, dataStart.get(), dataEnd.get(), pageable);
+            return this.operacaoRepository.findByUsuarioAndDataBetweenAndAtivoIsTrue(usuario, dataStart.get(), dataEnd.get(), pageable);
         }else {
             throw new RuntimeException("Data Start e Data End precisa ser preenchido ambos");
         }
@@ -69,9 +69,9 @@ public class OperacaoService {
     //** PARA TRAZER TODAS OPERACOES POR CARTEIRA, USADO PARA PAGINAR E PODE SER USADO COM RANGE DE DATA  **//
     public Page<Operacao> listAllByCarteira(Long carteira, Usuario usuario, Optional<LocalDateTime> dataStart, Optional<LocalDateTime> dataEnd, Pageable pageable){
         if (dataStart.isPresent() && dataEnd.isPresent()){
-            return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(carteira, usuario, dataStart.get(), dataEnd.get(), pageable);
+            return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuarioAndDataBetweenAndAtivoIsTrue(carteira, usuario, dataStart.get(), dataEnd.get(), pageable);
         }else if (dataStart.isEmpty() && dataEnd.isEmpty()){
-            return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuario(carteira, usuario, pageable);
+            return this.operacaoRepository.findByInvestimento_CarteiraIdAndUsuarioAndAtivoIsTrue(carteira, usuario, pageable);
         }else {
             throw new RuntimeException("Data Start e Data End precisa ser preenchido ambos");
         }
@@ -307,15 +307,16 @@ public class OperacaoService {
             double valorOperacao = Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade()))));
             int saldo = operacaoRepository.saldo(operacao.getInvestimento().getId(), operacao.getUsuario());
             double valorInv = operacaoRepository.valorInvestimento(operacao.getInvestimento().getId(), operacao.getUsuario()) * saldo;
-
-            if (valorOperacao <= valorInv) {
+            if (investimento.getValorInvestimento() - valorOperacao <= 0.00) {
+                investimento.setValorInvestimento(0.00);
+                investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
+            } else {
                 investimento.setValorInvestimento(investimento.getValorInvestimento() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
                 investimentoService.update(investimento.getId(), investimento, investimento.getUsuario());
-            }else {
-                throw new RuntimeException("Valor que você esta tentando vender é maior que o valor investido !");
             }
         }
     }
+
     @Transactional
     public void updateValorInvestimento(Operacao operacao, Usuario usuario) {
         Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
@@ -364,12 +365,18 @@ public class OperacaoService {
     public void insertCarteira(Operacao operacao) {
         Investimento investimento = this.investimentoService.findById(operacao.getInvestimento().getId(), operacao.getUsuario());
         Carteira carteira = investimento.getCarteira();
+        Double valorOperacao = Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade()))));
         if (operacao.getTipo().equals(TipoOperacao.compra)) {
             carteira.setValorCarteira(carteira.getValorCarteira() + Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
             carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
         } else if (operacao.getTipo().equals(TipoOperacao.venda)) {
-            carteira.setValorCarteira(carteira.getValorCarteira() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
-            carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+            if(carteira.getValorCarteira() - valorOperacao <= 0.00 ) {
+                carteira.setValorCarteira(0.00);
+                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+            }else {
+                carteira.setValorCarteira(carteira.getValorCarteira() - Double.parseDouble(String.valueOf(operacao.getValor().multiply(new BigDecimal(operacao.getQuantidade())))));
+                carteiraService.update(carteira.getId(), carteira, carteira.getUsuario());
+            }
         }
     }
 

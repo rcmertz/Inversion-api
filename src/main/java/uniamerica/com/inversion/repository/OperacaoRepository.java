@@ -25,22 +25,22 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
     public void desativar(@Param("operacao") Long idOperacao);
 
     //** PARA TRAZER TODAS OPERACOES POR CARTEIRA, USADO PARA PAGINAR RANGE DE DATA  **//
-    Page<Operacao> findByInvestimento_CarteiraIdAndUsuarioAndDataBetween(Long carteira, Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
+    Page<Operacao> findByInvestimento_CarteiraIdAndUsuarioAndDataBetweenAndAtivoIsTrue(Long carteira, Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
     //** PARA TRAZER TODAS OPERACOES POR CARTEIRA, SEM RANGE DE DATA  **//
-    Page<Operacao> findByInvestimento_CarteiraIdAndUsuario(Long carteira, Usuario usuario, Pageable pageable);
+    Page<Operacao> findByInvestimento_CarteiraIdAndUsuarioAndAtivoIsTrue(Long carteira, Usuario usuario, Pageable pageable);
 
     Page<Operacao> findByUsuario(Usuario usuario, Pageable pageable);
 
-    Page<Operacao> findByUsuarioAndDataBetween(Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
+    Page<Operacao> findByUsuarioAndDataBetweenAndAtivoIsTrue(Usuario usuario, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
     //** FILTRAR POR INVESTIMENTO E DATA  **//
-    Page<Operacao> findByUsuarioAndInvestimentoAndDataBetween(Usuario usuario, Investimento investimento, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
+    Page<Operacao> findByUsuarioAndInvestimentoAndDataBetweenAndAtivoIsTrue(Usuario usuario, Investimento investimento, LocalDateTime dataStart, LocalDateTime dataEnd, Pageable pageable);
 
-    Page<Operacao> findByUsuarioAndInvestimento(Usuario usuario, Investimento investimento, Pageable pageable);
+    Page<Operacao> findByUsuarioAndInvestimentoAndAtivoIsTrue(Usuario usuario, Investimento investimento, Pageable pageable);
 
 
-    Optional<Operacao> findByIdAndUsuario(Long Id, Usuario usuario);
+    Optional<Operacao> findByIdAndUsuarioAndAtivoIsTrue(Long Id, Usuario usuario);
 
     //** RETORNA A LISTA DE OPERAÇÕES TIPO COMPRA CASO NÃO TENHA UMA ÚLTIMA TIPO VENDA QUE O PREÇO MÉDIO SEJA 0  **//
     @Query("SELECT o FROM Operacao o " +

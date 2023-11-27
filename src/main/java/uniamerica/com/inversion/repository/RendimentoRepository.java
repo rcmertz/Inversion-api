@@ -21,5 +21,5 @@ public interface RendimentoRepository extends JpaRepository<Rendimento, Long> {
 
     Page<Rendimento> findByUsuario(Usuario usuario, Pageable pageable);
 
-    Optional<Rendimento> findByIdAndUsuario(Long Id, Usuario usuario);
+    Optional<Rendimento> findByIdAndUsuarioAndAtivoIsTrue(Long Id, Usuario usuario);
 }

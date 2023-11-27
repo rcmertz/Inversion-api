@@ -23,7 +23,7 @@ public class CarteiraService {
     private UsuarioRepository usuarioRepository;
 
     public Carteira findById(Long id, Usuario usuario){
-        return this.carteiraRepository.findByIdAndUsuario(id, usuario).orElse(new Carteira());
+        return this.carteiraRepository.findByIdAndUsuarioAndAtivoIsTrue(id, usuario).orElse(new Carteira());
     }
 
     public Page<Carteira> listAll(Pageable pageable, Usuario usuario){
@@ -79,7 +79,7 @@ public class CarteiraService {
             throw new RuntimeException("O nome da Carteira não foi fornecido, favor inserir um nome.");
         } else {
             // Verificar se já existe uma carteira com o mesmo nome
-            Carteira carteiraExistente = carteiraRepository.findByDescricaoCarteira(carteira.getDescricaoCarteira(), usuario.getId());
+            Carteira carteiraExistente = carteiraRepository.findByDescricaoCarteiraAndAtivoIsTrue(carteira.getDescricaoCarteira(), usuario.getId());
 
             if (carteiraExistente != null) {
                 // Verificar se a carteira existente está ativa

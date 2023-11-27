@@ -24,11 +24,11 @@ public interface CarteiraRepository extends JpaRepository<Carteira, Long> {
     public void desativar(@Param("carteira") Long idCarteira);
 
     @Query("SELECT c FROM Carteira c WHERE c.descricaoCarteira = :descricao AND c.ativo = true AND c.usuario.id = :usuario")
-    Carteira findByDescricaoCarteira(String descricao, Long usuario);
+    Carteira findByDescricaoCarteiraAndAtivoIsTrue(String descricao, Long usuario);
 
     Page<Carteira> findByUsuario(Usuario usuario, Pageable pageable);
 
-    Optional<Carteira> findByIdAndUsuario(Long Id, Usuario usuario);
+    Optional<Carteira> findByIdAndUsuarioAndAtivoIsTrue(Long Id, Usuario usuario);
 
     @Query("SELECT c.valorCarteira FROM Carteira c WHERE c.id = :carteiraId")
     Double findValorCarteiraById(@Param("carteiraId") Long carteiraId);
