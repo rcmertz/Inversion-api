@@ -5,8 +5,46 @@ on:
         branches: [main]
 
 jobs:
+<<<<<<< HEAD
     build:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
+=======
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up AWS CLI
+        run: |
+          echo "[default]" >> ~/.aws/credentials
+          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+          echo "aws_session_token=${{ secrets.AWS_SESSION_TOKEN }}" >> ~/.aws/credentials
+          aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}"
+          aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          aws configure set aws_session_token "${{ secrets.AWS_SESSION_TOKEN }}"
+          aws configure set region sua_regiao_aws
+
+      - name: Provision Infrastructure with Terraform
+        run: |
+          cd ./path/to/your/terraform/directory
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Deploy Docker container
+        run: |
+          docker run -d --name seu-container -p 8080:8080 inversion-api
+
+      - name: Test the application
+        run: docker exec -it seu-container mvn test
+
+      - name: Notify on Slack or other channels
+        # Add a step here to send notifications about the pipeline status.
+        # You might use a Slack action or a custom script.
+
+>>>>>>> 83426f745feabde3d02315f05ca7950c84bb8aef
