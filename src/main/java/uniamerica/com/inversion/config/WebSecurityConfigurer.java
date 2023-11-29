@@ -33,10 +33,10 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     private static final String[] AUTH_WHITELIST = {
             "/api/usuarios/login/**",
             "/api/usuarios/cadastro/**",
-//            "/swagger-resources/**",
-//            "/swagger-ui.html**",
-//            "/swagger-ui/**",
-            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui.html**",
+            "/swagger-ui/**",
+            "/v2/api-docs/**",
             "/webjars/**"
     };
     @Autowired
