@@ -16,10 +16,10 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
+          java-version: '18'
 
       - name: Build with Maven
-        run: mvn -B package --file ./path/to/your/pom.xml
+        run: mvn -B package --file /Inversion-api/pom.xml
 
       - name: Build Docker image
         run: docker build -t inversion-api .
@@ -56,3 +56,4 @@ jobs:
       - name: Notify on Slack or other channels
         # Add a step here to send notifications about the pipeline status.
         # You might use a Slack action or a custom script.
+
