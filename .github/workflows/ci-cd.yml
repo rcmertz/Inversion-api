@@ -1,4 +1,4 @@
-name: Deploy AWS Inversion
+name: Deploy Application Youtube
 
 on:
     push:
@@ -10,3 +10,28 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
+
+            - name: Setup Java
+              uses: actions/setup-java@v3
+              with:
+                distribution: 'temurin'
+                java-version: '17'
+            - name: Build project
+              run: mvn clean install -DskipTests
+            - name: Login Docker Hub
+              run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+            - name: Build docker image
+              run: docker build -t khensane/inversion .
+            - name: Push image docker
+              run: docker push khensane/inversion
+              
+    # deploy:
+    #     needs: build
+    #     runs-on: self-hosted
+    #     steps:
+    #         - name: Pull image from docker hub
+    #           run: docker pull khensane/inversion:latest
+    #         - name: Remove docker container
+    #           run: docker rm -f inversion
+    #         - name: Run docker container
+    #           run: docker run -d -p 8080:8080 -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD='${{secrets.DATABASE_PASSWORD}}' -e DATABASE_URL=${{secrets.DATABASE_URL}} --name inversion khensane/inversion
