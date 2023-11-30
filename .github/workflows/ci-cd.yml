@@ -25,13 +25,19 @@ jobs:
             - name: Push image docker
               run: docker push khensane/inversion
               
-    # deploy:
-    #     needs: build
-    #     runs-on: self-hosted
-    #     steps:
-    #         - name: Pull image from docker hub
-    #           run: docker pull khensane/inversion:latest
-    #         - name: Remove docker container
-    #           run: docker rm -f inversion
-    #         - name: Run docker container
-    #           run: docker run -d -p 8080:8080 -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD='${{secrets.DATABASE_PASSWORD}}' -e DATABASE_URL=${{secrets.DATABASE_URL}} --name inversion khensane/inversion
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install Ansible
+              run: sudo apt-get update && sudo apt-get install -y ansible
+
+            - name: Create Ansible Inventory
+              run: echo "[ec2]\n<ec2_instance_public_ip>" > inventory.ini
+
+            - name: Deploy using Ansible
+              run: ansible-playbook -i inventory.ini your_ansible_playbook.yml
+              env:
+                AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+                AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+                ANSIBLE_HOST_KEY_CHECKING: False
